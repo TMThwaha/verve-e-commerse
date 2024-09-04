@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .otp-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .otp-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 60%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .otp-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .otp-container button:disabled {
+            background-color: #ccc;
+        }
+
+        .otp-container .message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: red;
+        }
+
+        .timer {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="otp-container">
+        <% if(locals.err){ %>
+            <div>
+                <p style="color: red;" id="errorOtp">
+                    <%= err %>
+                </p>
+            </div>
+        <% } %>
+        <h2>Enter OTP</h2>
+        <form id="otpForm" action="/verifyOtp" method="post">
+            <input type="text" name="otp" id="otp" placeholder="4-digit OTP" maxlength="4" required>
+            <button type="submit">Verify</button>
+        </form>
+        <div class="timer" id="timer"></div>
+       <a href="/resendOtp"><button id="resend-button" onclick="resendOTP()" disabled>Resend OTP</button></a> 
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        let timerElement = document.getElementById('timer');
+        let resendButton = document.getElementById('resend-button');
+        let messageElement = document.getElementById('message');
+        let otpTimeout = 120; // 30 seconds timer
+        let interval; // Interval variable to store the setInterval reference
+
+        function startTimer(duration) {
+            clearInterval(interval);
+            let timer = duration, minutes, seconds;
+            resendButton.disabled = true;
+
+            function updateTimer() {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+
+                timerElement.textContent = 'Resend OTP in ' + minutes + ':' + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    timerElement.textContent = 'You can now resend the OTP';
+                    resendButton.disabled = false;
+                    localStorage.removeItem('otpTimer');
+                } else {
+                    localStorage.setItem('otpTimer', timer);
+                }
+            }
+
+            updateTimer();
+            interval = setInterval(updateTimer, 1000);
+        }
+
+        function resendOTP() {
+            resendButton.disabled = true; // Disable the button immediately
+            messageElement.textContent = ''; // Clear any previous messages
+            startTimer(otpTimeout); // Restart the timer
+            // Make an API call to resend the OTP
+            fetch('/resendOtp', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        messageElement.style.color = 'green';
+                        messageElement.innerText = 'OTP resent successfully!';
+                    } else {
+                        messageElement.style.color = 'red';
+                        messageElement.innerText = 'Failed to resend OTP. Please try again later.';
+                        resendButton.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    messageElement.style.color = 'red';
+                    // messageElement.innerText = 'An error occurred. Please try again.';
+                    resendButton.disabled = false;
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            let savedTime = localStorage.getItem('otpTimer');
+            if (savedTime) {
+                startTimer(parseInt(savedTime, 10));
+            } else {
+                startTimer(otpTimeout);
+            }
+        });
+    </script>
+</body>
+
+</html>

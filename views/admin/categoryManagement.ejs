@@ -1,0 +1,608 @@
+<%- include('../admin/partials/adminSlidebar') %>
+    <%- include('../admin/partials/adminNav') %>
+
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>User Data Table</title>
+            <!-- SweetAlert CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+            <!-- DataTables CSS -->
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+            <!-- Bootstrap CSS -->
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/Toastify.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/Toastify.min.js"></script>
+
+            <style>
+                :root {
+                    --primary-color: #000000;
+                    --secondary-color: #404040;
+                    --background-color: #FFFFFF;
+                    --text-color: #000000;
+                    --border-color: #CCCCCC;
+                    --border-radius: 4px;
+                    --padding: 16px;
+                    --margin: 16px;
+                    --font-family: 'Arial', sans-serif;
+                }
+
+                body {
+                    background: var(--grey);
+                    overflow-x: hidden;
+                }
+
+                th,
+                td {
+                    padding: 15px;
+                    text-align: left;
+                    border-bottom: 1px solid var(--border-color);
+                }
+
+                th {
+                    background-color: var(--primary-color);
+                    color: var(--background-color);
+                    text-transform: uppercase;
+                }
+
+                tr:hover {
+                    background-color: #F5F5F5;
+                }
+
+                tr:nth-child(even) {
+                    background-color: #F9F9F9;
+                }
+
+                .status {
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    font-weight: bold;
+                }
+
+                .active {
+                    background-color: #000000;
+                    color: var(--background-color);
+                }
+
+                .inactive {
+                    background-color: #707070;
+                    color: var(--background-color);
+                }
+
+                .block-btn,
+                .add-btn {
+                    background-color: #a81111;
+                    color: var(--background-color);
+                    border: none;
+                    padding: 8px 12px;
+                    cursor: pointer;
+                    border-radius: var(--border-radius);
+                    transition: background-color 0.3s;
+                }
+
+                .block-btn:hover,
+                .add-btn:hover {
+                    background-color: #000000;
+                }
+
+                #data-table {
+                    width: 97%;
+                    margin-left: 20px;
+                    margin-top: 43px;
+                }
+
+                #content main {
+                    width: 100%;
+                    padding: var(--padding);
+                    font-family: var(--font-family);
+                    max-height: calc(100vh - 56px);
+                    overflow-y: auto;
+                }
+
+                #content main .head-title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    grid-gap: 16px;
+                    flex-wrap: wrap;
+                }
+
+                #content main .head-title .left h1 {
+                    font-size: 36px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                    color: var(--text-color);
+                }
+
+                #content main .head-title .left .breadcrumb {
+                    display: flex;
+                    align-items: center;
+                    grid-gap: 16px;
+                }
+
+                #content main .head-title .left .breadcrumb li {
+                    margin-right: 8px;
+                }
+
+                #content main .head-title .left .breadcrumb li a {
+                    text-decoration: none;
+                    color: var(--text-color);
+                }
+
+                #content main .head-title .left .breadcrumb li a.Active {
+                    color: var(--primary-color);
+                }
+
+                #content main .head-title .btn-download {
+                    height: 36px;
+                    padding: 0 16px;
+                    border-radius: 36px;
+                    background: var(--primary-color);
+                    color: var(--background-color);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    grid-gap: 10px;
+                    font-weight: 500;
+                }
+
+                .add-btn-container {
+                    text-align: right;
+                    margin: 16px 20px 0 0;
+                }
+            </style>
+        </head>
+
+        <body>
+            <section id="content">
+                <main>
+                    <div class="head-title">
+                        <div class="left">
+                            <h1>Category Management</h1>
+                            <ul class="breadcrumb">
+                                <li><a href="#">Home</a></li>
+                                <li><i class='bx bx-chevron-right'></i></li>
+                                <li><a class="Active" href="#">Category Management</a></li>
+                            </ul>
+                        </div>
+                        <div class="add-btn-container">
+                            <button class="add-btn" style="height: 40px;" data-toggle="modal"
+                                data-target="#addCategoryModal">Add Category</button>
+                        </div>
+                    </div>
+
+                    <div id="data-table">
+                        <table id="userTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Added Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% addCat.forEach((element)=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= element.name %>
+                                        </td>
+                                        <td><span class="status <%= element.status ? 'active' : 'inactive' %>">
+                                                <%= element.status %>
+                                            </span></td>
+                                        <td><%- element.createdAt.toLocaleString('en-IN', { dateStyle: 'short' }) -%>
+                                        </td>
+                                        <td>
+                                            <% if (element.status) { %>
+                                                <button onclick="block('<%=element._id %>')"
+                                                    class="block-btn">Block</button>
+                                                <button
+                                                    onclick="editCategory('<%=element._id %>', '<%=element.name %>')"
+                                                    class="block-btn">Edit</button>
+                                                <% } else { %>
+                                                    <button onclick="unblock('<%=element._id %>')"
+                                                        class="block-btn">Unblock</button>
+                                                    <button
+                                                        onclick="editCategory('<%=element._id %>', '<%=element.name %>')"
+                                                        class="block-btn">Edit</button>
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </section>
+
+
+
+
+
+
+
+
+            <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog"
+                aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addCategoryForm" novalidate>
+                                <div class="form-group">
+                                    <label for="categoryName">Category Name</label>
+                                    <input type="text" class="form-control" id="categoryName"
+                                        placeholder="Enter category name" required pattern="[a-z]+"
+                                        title="Category name should only contain lowercase letters.">
+                                    <!-- <div class="invalid-feedback">
+                                        Please enter a valid category name with only lowercase letters.
+                                    </div> -->
+
+                                </div>
+                                <p id="errMess" style="color: #a81111;"></p>
+                                <button type="submit" id="save-Btn" class="btn btn-success">Save Category</button>
+                                <!-- <button type="submit" id="save-Btn" class="btn btn-success">Save Category</button> -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Edit Category Modal -->
+            <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog"
+                aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editCategoryForm" novalidate>
+                                <input type="hidden" id="editCategoryId">
+                                <div class="form-group">
+                                    <label for="editCategoryName">Category Name</label>
+                                    <input type="text" class="form-control" id="editCategoryName"
+                                        placeholder="Enter category name" required pattern="[A-Za-z]+( [A-Za-z]+)*"
+                                        title="Category name should only contain letters and spaces between words.">
+                                    <!-- <div class="invalid-feedback">Please enter a valid category name with only letters
+                                        and spaces.</div> -->
+                                </div>
+                                <p id="errMesss" style="color: #a81111;"></p>
+                                <button type="submit" id="saveEditBtn" class="btn btn-success">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+            <!-- jQuery -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <!-- DataTables JS -->
+            <script type="text/javascript" charset="utf8"
+                src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+            <!-- Bootstrap JS -->
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/tostify/dist/tostify.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/Toastify.min.js"></script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                const addForm = document.getElementById('addCategoryForm');
+                const categoryNameInput = document.getElementById('categoryName');
+                const errorMessageElement = document.getElementById('errMess');
+                const submitButton = document.getElementById('save-Btn');
+
+                function validateCategoryName(name) {
+                    return /^[a-zA-Z]{1,10}$/.test(name);
+                }
+
+                function showError(message) {
+                    errorMessageElement.textContent = message;
+                    categoryNameInput.classList.add('is-invalid');
+                    submitButton.disabled = true;
+                }
+
+                function clearError() {
+                    errorMessageElement.textContent = '';
+                    categoryNameInput.classList.remove('is-invalid');
+                    submitButton.disabled = false;
+                }
+
+                categoryNameInput.addEventListener('input', () => {
+                    const name = categoryNameInput.value;
+                    if (!validateCategoryName(name)) {
+                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                    } else {
+                        clearError();
+                    }
+                });
+
+                addForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const name = categoryNameInput.value;
+
+                    if (!validateCategoryName(name)) {
+                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                        return;
+                    }
+
+                    fetch('/admin/add-category', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ name: name.toUpperCase() }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            $('#addCategoryModal').modal('hide');
+                            window.location.reload();
+                        } else {
+                            showError(data.message || 'An error occurred while adding the category.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('An error occurred while adding the category.');
+                    });
+                });
+
+                // Initially disable the submit button
+                submitButton.disabled = true;
+            });
+
+            </script>
+            <script>
+              document.addEventListener('DOMContentLoaded', () => {
+                const editForm = document.getElementById('editCategoryForm');
+                const editCategoryNameInput = document.getElementById('editCategoryName');
+                const errorMessageElement = document.getElementById('errMesss');
+                const submitButton = document.getElementById('saveEditBtn');
+
+                function validateCategoryName(name) {
+                    return /^[a-zA-Z]{1,10}$/.test(name);
+                }
+
+                function showError(message) {
+                    errorMessageElement.textContent = message;
+                    editCategoryNameInput.classList.add('is-invalid');
+                    submitButton.disabled = true;
+                }
+
+                function clearError() {
+                    errorMessageElement.textContent = '';
+                    editCategoryNameInput.classList.remove('is-invalid');
+                    submitButton.disabled = false;
+                }
+
+                editCategoryNameInput.addEventListener('input', () => {
+                    const name = editCategoryNameInput.value;
+                    if (!validateCategoryName(name)) {
+                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                    } else {
+                        clearError();
+                    }
+                });
+
+                editForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const name = editCategoryNameInput.value;
+
+                    if (!validateCategoryName(name)) {
+                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                        return;
+                    }
+
+                    const categoryId = document.getElementById('editCategoryId').value;
+                    
+                    fetch(`/admin/edit-category/${categoryId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ name: name.toUpperCase() }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            $('#editCategoryModal').modal('hide');
+                            window.location.reload();
+                        } else {
+                            showError(data.message || 'An error occurred while updating the category.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('An error occurred while updating the category.');
+                    });
+                });
+
+                // Initially disable the submit button
+                submitButton.disabled = true;
+            });
+            </script>
+            <script>
+                $(document).ready(function () {
+                    $('#userTable').DataTable();
+                });
+
+                // Open Edit Category Modal and Populate Fields
+
+
+                // Handle Add Category Form Submission
+                document.getElementById('addCategoryForm').addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    var categoryName = $('#categoryName').val();
+                    var categoryData = { name: categoryName };
+                    fetch('/add-category', {
+                        method: "post",
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(categoryData)
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.success) {
+                                $('#addCategoryModal').modal('hide');
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
+                        });
+                });
+
+                // Block Category
+                function block(id) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/categoryTrue/${id}`, {
+                                method: "post",
+                                headers: { 'Content-Type': 'application/json' }
+                            })
+                                .then(response => response.json())
+                                .then(response => {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            position: "center",
+                                            icon: "success",
+                                            title: response.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 1000);
+                                    }
+                                });
+                        }
+                    });
+                }
+
+                // Unblock Category
+                function unblock(id) {
+                    fetch(`/categoryFalse/${id}`, {
+                        method: "post",
+                        headers: { "Content-Type": "application/json" }
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.success) {
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
+                        });
+                }
+            </script>
+            <!-- SweetAlert JS -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+
+
+
+            <!-- Add Category Modal -->
+
+
+
+
+
+
+
+
+
+
+            <script>
+
+                function editCategory(id, name) {
+                    $('#editCategoryModal').modal('show');
+
+                    document.getElementById('editCategoryName').value = name
+
+                    document.getElementById('editCategoryForm').addEventListener('submit', function (event) {
+                        event.preventDefault()
+
+                        // $('#editCategoryModal').modal('hide');
+
+                        const editname = document.getElementById('editCategoryName').value
+                        fetch(`/edit-category/${id}`, {
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ name: editname })
+                        })
+                            .then(response => response.json())
+                            .then(response => {
+                                if (response.success) {
+                                    console.log('enthaaaaaaaaaaaaaaaaaaaanu');
+                                    $('#editCategoryModal').modal('hide');
+
+                                    Swal.fire({
+                                        position: "center",
+                                        icon: "success",
+                                        title: response.message,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+
+                                    window.location.reload();
+
+                                }
+                            });
+
+                    })
+
+
+                }
+
+            </script>
+
+
+
+        </body>
+
+        </html>

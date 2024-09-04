@@ -1,0 +1,363 @@
+<%- include('../admin/partials/adminSlidebar') %>
+    <%- include('../admin/partials/adminNav') %>
+
+
+
+
+
+
+
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>User Data Table</title>
+            <!-- SweetAlert CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+            <style>
+                :root {
+                    --primary-color: #000000;
+                    /* Black */
+                    --secondary-color: #404040;
+                    /* Dark Grey */
+                    --background-color: #FFFFFF;
+                    /* White */
+                    --text-color: #000000;
+                    /* Black */
+                    --border-color: #CCCCCC;
+                    /* Light Grey */
+                    --border-radius: 4px;
+                    --padding: 16px;
+                    --margin: 16px;
+                    --font-family: 'Arial', sans-serif;
+                }
+
+                body {
+                    background: var(--grey);
+                    overflow-x: hidden;
+                }
+
+                th,
+                td {
+                    padding: 15px;
+                    text-align: left;
+                    border-bottom: 1px solid var(--border-color);
+                }
+
+                th {
+                    background-color: var(--primary-color);
+                    color: var(--background-color);
+                    text-transform: uppercase;
+                }
+
+                tr:hover {
+                    background-color: #F5F5F5;
+                    /* Light grey */
+                }
+
+                tr:nth-child(even) {
+                    background-color: #F9F9F9;
+                    /* Slightly lighter grey */
+                }
+
+                .status {
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    font-weight: bold;
+                }
+
+                .active {
+                    background-color: #000000;
+                    /* Black */
+                    color: var(--background-color);
+                }
+
+                .inactive {
+                    background-color: #707070;
+                    /* Medium Grey */
+                    color: var(--background-color);
+                }
+
+                .block-btn {
+                    background-color: #000000;
+                    /* Black */
+                    color: var(--background-color);
+                    border: none;
+                    padding: 8px 12px;
+                    cursor: pointer;
+                    border-radius: var(--border-radius);
+                    transition: background-color 0.3s;
+                }
+
+                .block-btn:hover {
+                    background-color: #a81111;
+                    /* Dark Grey */
+
+                }
+
+                #data-table {
+                    width: 97%;
+                    margin-left: 20px;
+                    margin-top: 43px;
+                }
+
+                #content main {
+                    width: 100%;
+                    padding: var(--padding);
+                    font-family: var(--font-family);
+                    max-height: calc(100vh - 56px);
+                    overflow-y: auto;
+                }
+
+                #content main .head-title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    grid-gap: 16px;
+                    flex-wrap: wrap;
+                }
+
+                #content main .head-title .left h1 {
+                    font-size: 36px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                    color: var(--text-color);
+                }
+
+                #content main .head-title .left .breadcrumb {
+                    display: flex;
+                    align-items: center;
+                    grid-gap: 16px;
+                }
+
+                #content main .head-title .left .breadcrumb li {
+                    margin-right: 8px;
+                }
+
+                #content main .head-title .left .breadcrumb li a {
+                    text-decoration: none;
+                    color: var(--text-color);
+                }
+
+                #content main .head-title .left .breadcrumb li a.Active {
+                    color: var(--primary-color);
+                }
+
+                #content main .head-title .btn-download {
+                    height: 36px;
+                    padding: 0 16px;
+                    border-radius: 36px;
+                    background: var(--primary-color);
+                    color: var(--background-color);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    grid-gap: 10px;
+                    font-weight: 500;
+                }
+            </style>
+            <!-- DataTables CSS -->
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+        </head>
+
+        <body>
+
+
+            <section id="content">
+
+                <main>
+
+                    <div class="head-title">
+                        <div class="left">
+                            <h1>User Management</h1>
+                            <ul class="breadcrumb">
+                                <li>
+                                    <a href="#">Home</a>
+                                </li>
+                                <li><i class='bx bx-chevron-right'></i></li>
+                                <li>
+                                    <a class="Active" href="#">User Management</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="data-table">
+
+                        <table id="userTable">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Block User</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% userInfo.forEach((element,index)=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= index+1 %>
+                                        </td>
+                                        <td>
+                                            <%= element.name %>
+                                        </td>
+                                        <td>
+                                            <%= element.email %>
+                                        </td>
+
+                                        <% if (element.status) { %>
+                                            <td><span class="status active">Active</span></td>
+                                            <td><button class="block-btn" id="userAction"
+                                                    onclick="userBlock('<%= element._id %>')">Block</button></td>
+
+                                            <% }else{ %>
+                                                <td><span class="status active">InActive</span></td>
+                                                <td><button class="block-btn" id="userAction"
+                                                        onclick="userUnBlock('<%= element._id %>')">Unblock</button>
+                                                </td>
+
+                                                <% } %>
+                                    </tr>
+                                    <% }) %>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </section>
+
+
+            <!-- jQuery -->
+            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+            <!-- DataTables JS -->
+            <script type="text/javascript" charset="utf8"
+                src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $('#userTable').DataTable();
+
+                    // Load the status from local storage when the page loads
+                    // $('#userTable tbody tr').each(function () {
+                    //     var row = $(this);
+                    //     var email = row.find('td:nth-child(3)').text();
+                    //     var status = localStorage.getItem(email);
+
+                    //     if (status === 'Inactive') {
+                    //         row.find('.status').removeClass('active').addClass('inactive').text('Inactive');
+                    //         row.find('.block-btn').text('Unblock');
+                    //     }
+                    // });
+
+                    // Function to handle the block/unblock button click
+                    // $('#userTable').on('click', '.block-btn', function () {
+                    // Find the row containing the clicked button
+                    // var row = $(this).closest('tr');
+                    // var email = row.find('td:nth-child(3)').text();
+
+                    // Find the status span within this row
+                    // var statusSpan = row.find('.status');
+
+                    // Change the status and button text, and store the status in local storage
+                    // if (statusSpan.hasClass('active')) {
+                    //     statusSpan.removeClass('active').addClass('inactive').text('Inactive');
+                    //     $(this).text('Unblock');
+                    //     localStorage.setItem(email, 'Inactive');
+                    // } else if (statusSpan.hasClass('inactive')) {
+                    //     statusSpan.removeClass('inactive').addClass('active').text('Active');
+                    //     $(this).text('Block');
+                    //     localStorage.setItem(email, 'Active');
+                    // }
+                    // });
+                });
+
+            </script>
+            <script>
+                function userBlock(id) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            console.log(id);
+                            fetch(`/userBlock/${id}`, {
+                                method: "post",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    // Include any other headers you might need, such as authentication tokens
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(response => {
+                                    if (response.success) {
+                                        console.log(response.message);
+                                        Swal.fire({
+                                            position: "center",
+                                            icon: "success",
+                                            title: response.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                    }
+                                    setTimeout(() => {
+                                        window.location.reload()
+                                    }, 1000);
+                                })
+                        }
+                    });
+
+
+
+                }
+
+
+
+
+
+                //userUnblock
+                function userUnBlock(id) {
+                    console.log(id);
+
+                    fetch(`/userUnblock/${id}`, {
+                        method: "post",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.success) {
+                                console.log("jhghgjhgjhgj", response);
+
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                setTimeout(() => {
+                                    window.location.reload()
+                                }, 1000);
+
+                            }
+                        })
+                }
+            </script>
+
+            <!-- SweetAlert JS -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+        </body>
+
+        </html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        /* Form Styles */
+        .product-form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .product-form input[type="text"],
+        .product-form input[type="number"],
+        .product-form textarea,
+        .product-form select,
+        .product-form input[type="date"],
+        .product-form input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .product-form textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .product-form .form-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .product-form .submit-btn,
+        .product-form .cancel-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .product-form .submit-btn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .product-form .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .product-form .cancel-btn {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .product-form .cancel-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</head>
+<%- include('../admin/partials/adminSlidebar') %>
+    <link rel="stylesheet" href="../adminstyle/style.css">
+
+
+
+    <section id="content">
+        <!-- NAVBAR -->
+        <nav>
+            <i class='bx bx-menu'></i>
+            <a href="#" class="nav-link">Categories</a>
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                </div>
+            </form>
+            <input type="checkbox" id="switch-mode" hidden>
+            <label for="switch-mode" class="switch-mode"></label>
+            <a href="#" class="notification">
+                <i class='bx bxs-bell'></i>
+                <span class="num">8</span>
+            </a>
+            <a href="#" class="profile">
+                <!-- <img src="img/people.png"> -->
+            </a>
+        </nav>
+
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+
+        <!-- MAIN -->
+    </section>
+
+    <body>
+        <section id="content">
+            <main>
+                <div class="head-title">
+                    <div class="left">
+                        <h1>Edit Product</h1>
+                        <ul class="breadcrumb">
+                            <li><a href="#">Home</a></li>
+                            <li><i class='bx bx-chevron-right'></i></li>
+                            <li><a class="Active" href="#">Edit Product</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <form id="editProductForm" class="product-form" onsubmit="updateImageIndex()" action="/update-product/<%= product._id %>" method="post" enctype="multipart/form-data" novalidate>
+                    <label for="productName">Product Name:</label>
+                    <input type="text" id="productName" name="productName" value="<%= product.name %>" required pattern="[A-Za-z\s]+" title="Product name should only contain letters and spaces." aria-required="true">
+                    <p id="err-mess1" style="color: red;"></p>
+                
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" placeholder="Enter product description" required aria-required="true" minlength="10" maxlength="1000" title="Description should be between 10 and 1000 characters long."><%= product.description %></textarea>
+                
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required aria-required="true">
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category?._id %>" <%= category?._id?.equals(product?.category?._id) ? 'selected' : '' %>><%= category?.name %></option>
+                        <% }) %>
+                    </select>
+                
+                    <label for="brand">Brand:</label>
+                    <select id="brand" name="brand" required aria-required="true">
+                        <% brands.forEach(brand => { %>
+                            <option value="<%= brand._id %>" <%=brand._id.equals(product.brand._id) ? 'selected' : '' %>><%= brand.name %></option>
+                        <% }) %>
+                    </select>
+                
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" placeholder="Enter price" step="0.01" required min="0.01" value="<%= product.price %>" title="Price must be a positive number." aria-required="true">
+                    <p id="err-mess-price" style="color: red;"></p>
+                
+                    <label for="stockQuantity">Stock Quantity:</label>
+                    <input type="number" id="stockQuantity" name="stockQuantity" placeholder="Enter stock quantity" required min="1" value="<%= product.stock %>" title="Stock quantity must be a positive integer." aria-required="true">
+                    <p id="err-mess-stock" style="color: red;"></p>
+                
+                    <label for="productImages">Product Images:</label>
+                    <div id="imageUploadContainer">
+                        <% if (product.image && product.image.length > 0) { %>
+                            <% product.image.forEach((imageName, index) => { %>
+                                <div class="image-field" id="image-<%= index %>" style="width: 132px;">
+                                    <img style="width: 132px;" src="/uploads/<%= imageName %>" alt="Product Image">
+                                    <input type="hidden" name="existingImages[]" value="<%= imageName %>">
+                                    <button type="button" class="remove-image" onclick="removeProduct('<%= index %>')" data-index="<%= index %>">Remove</button>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                        <input type="file" id="productImages" name="newProductImages" multiple>
+                        <div id="selectedImagesContainer"></div>
+                    </div>
+                
+                    <input type="hidden" name="deleteImage" id="deleteImageIndex" value="">
+                    
+                    <div class="form-buttons">
+                        <button id="save-Btn1" type="submit" class="submit-btn">Save Product</button>
+                        <button type="button" class="cancel-btn" onclick="cancelEdit()">Cancel</button>
+                    </div>
+                </form>
+                
+                
+            </main>
+        </section>
+
+
+<script>
+   document.getElementById('editProductForm').addEventListener('submit', function (event) {
+    event.preventDefault();  // Prevent the default form submission
+
+    const form = document.getElementById('editProductForm');
+    const name = document.getElementById('productName').value;
+    const description = document.getElementById('description').value;
+    const category = document.getElementById('category').value;
+    const brand = document.getElementById('brand').value;
+    const price = document.getElementById('price').value;
+    const stock = document.getElementById('stockQuantity').value;
+
+    // Clear previous error messages
+    document.getElementById('err-mess1').textContent = '';
+    document.getElementById('err-mess-price').textContent = '';
+    document.getElementById('err-mess-stock').textContent = '';
+
+    // Basic validation
+    let hasError = false;
+
+    if (name === '') {
+        document.getElementById('err-mess1').textContent = 'Name is required';
+        hasError = true;
+    }
+
+    if (price <= 0) {
+        document.getElementById('err-mess-price').textContent = 'Price must be a positive number';
+        hasError = true;
+    }
+
+    if (stock < 1) {
+        document.getElementById('err-mess-stock').textContent = 'Stock quantity must be at least 1';
+        hasError = true;
+    }
+
+    // If there's an error, don't proceed
+    if (hasError) {
+        return;
+    }else{
+
+                form.submit();
+            
+    }
+
+
+
+
+
+    // If no error, you can proceed with the form submission (AJAX call, etc.)
+    console.log('Name:', name);
+    console.log('Description:', description);
+    console.log('Category:', category);
+    console.log('Brand:', brand);
+    console.log('Price:', price);
+    console.log('Stock:', stock);
+
+
+});
+
+
+        
+    
+</script>
+
+
+
+
+
+
+
+
+
+        <script>
+            let deleteImage = []
+
+
+
+            function cancelEdit() {
+                window.location.href = '/productManagement';
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('id');
+                const data = {
+                    productId,
+                    deleteImage,
+                }
+                const datas = new URLSearchParams()
+
+                if (productId) {
+                    console.log("______________ searching ..........");
+
+                    fetch(`/api/products/${productId}`)
+                        .then(response => response.json())
+                        .then(product => {
+                            // Fill the form with product details
+                            document.getElementById('productName').value = product.name;
+                            document.getElementById('description').value = product.description;
+                            document.getElementById('category').value = product.category._id;
+                            document.getElementById('brand').value = product.brand._id;
+                            document.getElementById('price').value = product.price;
+                            document.getElementById('stockQuantity').value = product.stock;
+                            // Handle image and date fields if necessary
+                        })
+                        .catch(error => console.error('Error fetching product:', error));
+                }
+            });
+
+
+
+
+            //remove button
+
+            function removeProduct(index) {
+                const imageIndex = document.getElementById(`image-${index}`);
+                if (imageIndex) {
+                    imageIndex.remove()
+                    deleteImage.push(index);
+                }
+
+            }
+
+            function updateImageIndex() {
+                document.getElementById("deleteImageIndex").value = JSON.stringify(deleteImage)
+            }
+
+
+
+
+            //cropper
+            function displaySelectedImages(input) {
+                const selectedImagesContainer = document.getElementById("selectedImagesContainer");
+                selectedImagesContainer.innerHTML = "";
+
+                for (let i = 0; i < input.files.length; i++) {
+                    const file = input.files[i];
+                    const reader = new FileReader();
+                    const cropContainer = document.createElement("div");
+                    cropContainer.classList.add("image-crop-container");
+                    cropContainer.innerHTML = `
+            <div class="image-container" style="width:400px">
+                <img id="image${i}" src="" alt="Select an image to crop" style="height: 300px;width:230px">
+            </div>
+            <button class="crop-button" id="cropButton${i}">Crop Image ${i + 1}</button>
+        `;
+                    selectedImagesContainer.appendChild(cropContainer);
+
+                    const image = cropContainer.querySelector(`#image${i}`);
+                    const cropButton = cropContainer.querySelector(`#cropButton${i}`);
+
+                    reader.onload = () => {
+                        image.src = reader.result;
+                        let cropper = null;
+
+                        cropButton.addEventListener("click", (event) => {
+                            event.preventDefault();
+                            if (cropper) {
+                                const canvas = cropper.getCroppedCanvas();
+                                const croppedImageDataURL = canvas.toDataURL('image/png');
+                                image.src = croppedImageDataURL;
+                                const croppedImageFile = dataURLToFile(croppedImageDataURL, file.name);
+                                const currentFiles = Array.from(input.files);
+                                currentFiles[i] = croppedImageFile;
+
+                                const newFileList = createFileList(currentFiles);
+                                input.files = newFileList;
+                                cropper.destroy();
+                                cropper = null;
+                                cropButton.textContent = `Crop Image ${i + 1}`;
+                            } else {
+                                cropper = new Cropper(image, {
+                                    aspectRatio: 1,
+                                    viewMode: 1,
+                                    minCropBoxWidth: 200,
+                                    minCropBoxHeight: 200
+                                });
+                                cropButton.textContent = "Apply Crop";
+                            }
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            function dataURLToFile(dataurl, filename) {
+                const arr = dataurl.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new File([u8arr], filename, { type: mime });
+            }
+
+            function createFileList(files) {
+                const dataTransfer = new DataTransfer();
+                files.forEach(file => dataTransfer.items.add(file));
+                return dataTransfer.files;
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const fileInput = document.getElementById('productImages');
+                fileInput.addEventListener('change', function () {
+                    displaySelectedImages(this);
+                });
+            });
+
+        </script>
+
+
+
+    </body>
+
+</html>

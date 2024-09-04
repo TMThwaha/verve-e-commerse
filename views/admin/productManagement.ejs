@@ -1,0 +1,366 @@
+<%- include('../admin/partials/adminSlidebar') %>
+    <%- include('../admin/partials/adminNav') %>
+
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Product List</title>
+            
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+            <style>
+                :root {
+                    --primary-color: #000000;
+                    --secondary-color: #404040;
+                    --background-color: #FFFFFF;
+                    --text-color: #000000;
+                    --border-color: #CCCCCC;
+                    --border-radius: 4px;
+                    --padding: 16px;
+                    --margin: 16px;
+                    --font-family: 'Arial', sans-serif;
+                }
+
+                body {
+                    background: var(--grey);
+                    overflow-x: hidden;
+                }
+
+                table {
+                    width: 95%;
+                    border-collapse: collapse;
+                    margin-top: 40px;
+                    margin-left: 1%;
+
+                }
+
+                th,
+                td {
+                    border: 1px solid var(--border-color);
+                    padding: 12px;
+                    text-align: center;
+                }
+
+                th {
+                    background-color: var(--primary-color);
+                    color: #fff;
+                }
+
+                tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+
+                img {
+                    width: 50px;
+                    height: 50px;
+                }
+
+                .action-buttons button {
+                    background-color: rgb(249, 233, 16);
+                    border: none;
+                    padding: 5px 10px;
+                    margin: 2px;
+                    cursor: pointer;
+                    border-radius: var(--border-radius);
+                }
+
+                .action-buttons button:hover {
+                    background-color: #555;
+                }
+
+                .add-btn-container {
+                    text-align: right;
+                    margin: var(--margin);
+                }
+
+                .block-btn,
+                .add-btn {
+                    background-color: #a81111;
+                    color: var(--background-color);
+                    border: none;
+                    padding: 8px 12px;
+                    cursor: pointer;
+                    border-radius: var(--border-radius);
+                    transition: background-color 0.3s;
+                }
+
+                .add-btn:hover {
+                    background-color: #000000;
+                }
+
+                .edit-btn {
+                    background-color: #f9e910;
+                    /* Yellow color */
+                    color: var(--background-color);
+                    border: none;
+                    cursor: pointer;
+                    border-radius: var(--border-radius);
+                    transition: background-color 0.3s;
+                }
+
+                .edit-btn:hover {
+                    background-color: #e0e0e0;
+                    /* Light grey color for hover effect */
+                }
+
+                #delete-btn {
+                    color: var(--background-color);
+                    background-color: rgb(227, 5, 5);
+                    border: none;
+                    cursor: pointer;
+                    border-radius: var(--border-radius);
+                    transition: background-color 0.3s;
+                }
+
+                #delete-btn:hover {
+                    background-color: #000000;
+                }
+
+                .modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(0, 0, 0, 0.4);
+                }
+
+                .modal-content {
+                    background-color: #fefefe;
+                    margin: 15% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                    border-radius: var(--border-radius);
+                }
+
+                .close-btn {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+
+                .close-btn:hover {
+                    color: black;
+                }
+
+                button {
+                    margin: 5px;
+                }
+
+                .cancel-btn {
+                    background-color: #f44336;
+                    color: white;
+                    border: none;
+                    border-radius: var(--border-radius);
+                    padding: 8px 12px;
+                    cursor: pointer;
+                }
+
+                .cancel-btn:hover {
+                    background-color: #d32f2f;
+                }
+            </style>
+        </head>
+
+        <body>
+            <section id="content">
+                <main>
+                    <div class="head-title">
+                        <div class="left">
+                            <h1>Product Management</h1>
+                            <ul class="breadcrumb">
+                                <li><a href="#">Home</a></li>
+                                <li><i class='bx bx-chevron-right'></i></li>
+                                <li><a class="Active" href="#">Product Management</a></li>
+                            </ul>
+                        </div>
+                        <div class="add-btn-container">
+                                    <form action="/addProduct" method="post">
+                                        <button class="add-btn" id="openModalBtn" style="height: 40px;">Add
+                                            Product</button>
+                                    </form>
+                        </div>
+                    </div>
+                    <% if (locals.msg) { %>
+                        <div>
+                            <h5 style="color: #a81111;">
+                                <%= msg %>
+                            </h5>
+                        </div>
+                        <% } %>
+                        <% if (locals.edtSuccess) { %>
+                            <div>
+                                <h5 style="color: #a81111;">
+                                    <%= edtSuccess %>
+                                </h5>
+                            </div>
+                        <% } %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% addProduct.forEach((element,index)=> { %>
+                                <tr>
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td><img src="/uploads/<%= element.image[0] %>" alt=""></td>
+                                    <td>
+                                        <%= element.name %>
+                                    </td>
+                                    
+                                    <td>
+                                        <%= element.category?.name %>
+                                    </td>
+                                    <td>
+                                        <%= element.brand.name %>
+                                    </td>
+                                    <td>
+                                        <%= element.price %>
+                                    </td>
+                                    <td>
+                                        <%= element.stock %>
+                                    </td>
+
+                                    <td>
+                                        <% if (element.status) { %>
+                                            <button onclick="block('<%=element._id %>')"
+                                                class="block-btn">Block</button>
+                                            <% } else { %>
+                                                <button onclick="unblock('<%=element._id %>')"
+                                                    class="block-btn">Unblock</button>
+                                            
+                                                    
+                                                <% } %>
+                                        <a href="/editProduct/<%= element._id %>">
+                                            <button class="block-btn" style="background-color: #f79d0c;">Edit</button>
+                                        </a>
+                                        
+                                    </td>
+                                    
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </main>
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+            <!-- <script>
+                function editProduct(id) {
+                    console.log('ikk', id);
+                    fetch(`/edit-product/${id}`, {
+                                method: "GET",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                            })
+                                .then(response => response.json())
+                                .then(response => {
+                                    if (response.success) {
+                                        console.log(response.id);
+                                        window.location.href:''
+                                        
+                                    }
+                                  
+                                })
+                        }
+
+                
+            </script> -->
+
+
+            <script>
+                  function block(id) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/productTrue/${id}`, {
+                                method: "post",
+                                headers: { 'Content-Type': 'application/json' }
+                            })
+                                .then(response => response.json())
+                                .then(response => {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            position: "center",
+                                            icon: "success",
+                                            title: response.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 1000);
+                                    }
+                                });
+                        }
+                    });
+                }
+
+
+
+                //unblock
+                function unblock(id) {
+                    fetch(`/productFalse/${id}`, {
+                        method: "post",
+                        headers: { "Content-Type": "application/json" }
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.success) {
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
+                        });
+                }
+            
+            </script>
+
+        </body>
+
+        </html>
