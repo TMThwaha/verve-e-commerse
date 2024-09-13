@@ -42,19 +42,21 @@
 															onclick="minus('<%= element?.productId?._id %> ')">
 															<i class="fs-16 zmdi zmdi-minus"></i>
 														</div>
-														<input class="mtext-104 cl3 txt-center num-product"
-															type="number" name="num-product1"
-															value="<%= element?.quantity %>">
+														<input id="cartqty" min="1"
+															class="mtext-104 cl3 txt-center num-product" type="number"
+															name="num-product1" value="<%= element?.cartquantity %>">
 														<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-															onclick="plus('<%= element?.productId?._id %> ')">
+															onclick="plus('<%= element?.productId?._id %> ','<%= element?.productId?.stock %> ')">
+															<input type="hidden" id="stockUpdate"
+																value="<%= element?.productId?.stock %>">
 
 															<i class="fs-16 zmdi zmdi-plus"></i>
 														</div>
 
 													</div>
 												</td>
-												<td class="column-5">$<%= (element.price * element?.quantity).toFixed(2)
-														%>
+												<td class="column-5">$<%= (element.price *
+														element?.cartquantity).toFixed(2) %>
 												</td>
 											</tr>
 											<% }) %>
@@ -110,7 +112,7 @@
 
 								<div class="size-209">
 									<span class="mtext-110 cl2">
-										<%= subTotal  %>
+										<%= subTotal %>
 									</span>
 								</div>
 							</div>
@@ -168,7 +170,7 @@
 
 								<div class="size-209 p-t-1">
 									<span class="mtext-110 cl2">
-										<%= subTotal  %>
+										<%= subTotal %>
 									</span>
 								</div>
 							</div>
@@ -399,6 +401,8 @@
 										location.reload()
 									}, 1500);
 								} else {
+									console.log('........................else....................');
+									
 									console.error('Failed to delete item:', result.message);
 								}
 							})
@@ -482,13 +486,32 @@
 
 			//increment
 			function plus(productId) {
-				//    console.log('llllllllllllll',productId);
+
+				const cartQty = document.getElementById('cartqty').value;
+				const stock = document.getElementById('stockUpdate').value
+				// console.log('mmmmmmmmmmmm',cartQty);
+				console.log("stooooooooooooooooooo", stock);
+
+				if (cartQty >= stock) {
+					// console.log("stooooooooooooooooooo",stock);
+
+					Toastify({
+						text: 'Out of stock',
+						duration: 3000,
+						close: true,
+						gravity: "top",
+						position: "center",
+						backgroundColor: '#71cd14',
+						className: "toastify-custom",
+					}).showToast();
+					return;
+				}
+				console.log('llllllllllllll', productId);
 				fetch(`/increment-quantity/${productId}`, {
 					method: "post",
 					headers: {
 						"content-type": "application/json"
-					}
-					,
+					},
 					body: JSON.stringify({ quantity: 1 })
 				})
 					.then(response => response.json())
@@ -503,15 +526,28 @@
 
 			//decrement
 			function minus(productId) {
-				console.log(',,,,,,,,,,,,,,', productId);
+				const cartQty = Number(document.getElementById('cartqty').value);
+
+				if (cartQty <= 1) {
+					console.log('.....................................................................', cartQty)
+					Toastify({
+						text: 'Quantity must be possitive',
+						duration: 3000,
+						close: true,
+						gravity: "top",
+						position: "center",
+						backgroundColor: '#71cd14',
+						className: "toastify-custom",
+					}).showToast();
+					return;
+				}
 
 				fetch(`/decrement-quantity/${productId}`, {
 					method: "post",
 					headers: {
 						"content-type": "application/json"
-					}
-					,
-					body: JSON.stringify({ quantity: 1 })
+					},
+					body: JSON.stringify({ quantity: 1, cartQty })
 				})
 					.then(response => response.json())
 					.then(response => {

@@ -182,38 +182,43 @@ module.exports = {
     console.log("hhhhhhhhhhhh");
     res.render("user/otp");
   },
-
-  userLogin: async (req, res) => {
+userLogin: async (req, res) => {
     const { email, pass } = req.body;
 
     try {
-      const user = await userDb.findOne({ email: email });
+        const user = await userDb.findOne({ email: email });
 
-      if (!user) {
-        req.session.error = "Invalid E-mail Id";
-        return res.redirect('/user-login');
-      }
-      console.log('sssssssssssssssssssssssssss',user);
+        if (!user) {
+            req.session.error = "Invalid E-mail Id";
+            return res.redirect('/user-login');
+        }
 
-      if (!user.status) {
-        
-        req.session.error = "E-mail id has been blocked try again with another e-mail";
-        return res.redirect('/user-login')
-      }
+        if (!user.status) {
+            req.session.error = "E-mail id has been blocked. Try again with another e-mail.";
+            return res.redirect('/user-login');
+        }
 
-      req.session.user = user;
-      const isValid = await bcrypt.compare(pass, user.password);
-      if (isValid) {
-        res.redirect('/');
-      } else {
-        req.session.error = "Invalid Password";
-        res.redirect('/user-login');
-      }
-      console.log("password", isValid);
+        // Log the password and user password (hashed)
+        console.log("Entered password:", pass);
+        console.log("Stored hashed password:", user.password);
+
+        // Compare the provided password with the stored hashed password
+        const isValid = await bcrypt.compare(pass, user.password);
+        console.log("Password valid:", isValid);
+
+        if (isValid) {
+            req.session.user = user;
+            res.redirect('/');
+        } else {
+            req.session.error = "Invalid Password";
+            res.redirect('/user-login');
+        }
     } catch (error) {
-      console.log(error);
+        console.error("Login error:", error);
+        req.session.error = "An error occurred. Please try again.";
+        res.redirect('/user-login');
     }
-  },
+},
 
   userLogout: (req, res) => {
     req.session.destroy(err => {

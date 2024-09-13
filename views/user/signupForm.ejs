@@ -48,6 +48,7 @@
                     
                     <div class="wrap-input100 validate-input" data-validate="Password is required">
                         <input class="input100" type="password" placeholder="Password" name="pass" id="password">
+                        <input type="checkbox" id="showPassword"><p>Show password</p>
                         <div class="error-message" id="password-error"></div>
                     </div>
 
@@ -84,6 +85,21 @@
         </div>
     </div>
     
+
+
+    <script>
+        const passwordField = document.getElementById('password');
+        const showPassword = document.getElementById('showPassword');
+
+        showPassword.addEventListener('change',function(){
+            if(this.checked){
+                passwordField.type = 'text'; 
+            }else{
+                passwordField.type = 'password'
+            }
+        })
+
+    </script>
     <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
     <script src="vendor/animsition/js/animsition.min.js"></script>
     <script src="vendor/bootstrap/js/popper.js"></script>

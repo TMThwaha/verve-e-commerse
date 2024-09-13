@@ -6,7 +6,7 @@ module.exports = {
     addToCart: async (req, res) => {
 
         const productId = req.body.productId;
-        
+
         try {
             // Check if the user is logged in
             if (!req.session.user) {
@@ -40,7 +40,7 @@ module.exports = {
                 // Add the product to the cart
                 cart.cartProducts.push({
                     productId: product._id,
-                    quantity: 1,
+                    cartquantity: 1,
                     price: product.price,
                     subtotal: product.price,
                 });
@@ -54,7 +54,7 @@ module.exports = {
                     userId: req.session.user._id,
                     cartProducts: [{
                         productId: product._id,
-                        quantity: 1,
+                        cartquantity: 1,
                         price: product.price,
                         subtotal: product.price,
                     }]
@@ -72,26 +72,26 @@ module.exports = {
     userCart: async (req, res) => {
 
         try {
-          
-            
+
+
             var userInfo = req.session.user;
             // console.log(userInfo, "bccc");
 
             var cart = await cartModel.findOne({ userId: userInfo._id }).populate('cartProducts.productId')
-           
-            console.log('cartill onnullaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', cart);
-           
 
-            if (cart==null) {
+            //  console.log('cartill onnullaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', cart);
 
-                 console.log('cartill onnullaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',cart);
-                                  const carlen=0
-                return res.render('user/userCart', { cart,userInfo ,subTotal:0,carlen});
+
+            if (cart.cartProducts.length<=0) {
+
+                console.log('cartill onnullaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',cart);
+                const carlen = 0
+                return res.render('user/userCart', { cart, userInfo, subTotal: 0, carlen });
             } else {
                 var carlen = cart.cartProducts.length
                 const eachProTotal = cart.cartProducts.map(value => {
                     console.log('price', value.price);
-                    return value.price * value.quantity
+                    return value.price * value.cartquantity
 
                 })
 
@@ -99,11 +99,11 @@ module.exports = {
 
 
 
-                console.log("/////?/////////////", subTotal);
+                // console.log("/////?/////////////", subTotal);
 
 
                 res.render('user/userCart', { userInfo, cart, carlen, subTotal });
-           
+
 
             }
 
@@ -115,26 +115,25 @@ module.exports = {
         }
     },
     increment: async (req, res) => {
-        // console.log(req.params)
-        // console.log("ksjdhfkjsh", req.body);
+        console.log(req.params)
+        console.log("ksjdhfkjsh", req.body);
         const { id } = req.params;
         const { quantity } = req.body;
+        var userInfo = req.session.user;
+
         // console.log('p  arams id', id);
 
         try {
-            const cart = await cartModel.findOne()
-
-
-
+            const cart = await cartModel.findOne({ userId: userInfo._id});
 
             const matchingProduct = cart.cartProducts.find(product => product.productId.toString() == id.toString());
-            // console.log('jhjjjjjjjjjjjjjjjj', matchingProduct);
+            console.log('check match or not and car or not====', matchingProduct);
             if (matchingProduct) {
                 // console.log('befor updation',matchingProduct.quantity);
 
-                matchingProduct.quantity += quantity
+                matchingProduct.cartquantity += quantity
 
-                // console.log("after",matchingProduct.quantity);
+                console.log("after", matchingProduct.cartquantity);
 
                 await cart.save()
                 res.json({ success: true })
@@ -151,11 +150,14 @@ module.exports = {
         console.log(req.params)
         console.log("ksjdhfkjsh", req.body);
         const { id } = req.params;
-        const { quantity } = req.body;
+        const { quantity, cartQty } = req.body;
         console.log('p  arams id', id);
+        var userInfo = req.session.user;
+
 
         try {
-            const cart = await cartModel.findOne()
+
+            const cart = await cartModel.findOne({ userId: userInfo._id})
 
 
 
@@ -163,11 +165,11 @@ module.exports = {
             const matchingProduct = cart.cartProducts.find(product => product.productId.toString() == id.toString());
             console.log('jhjjjjjjjjjjjjjjjj', matchingProduct);
             if (matchingProduct) {
-                console.log('befor updation', matchingProduct.quantity);
+                console.log('befor updation', matchingProduct.cartquantity);
 
-                matchingProduct.quantity -= quantity
+                matchingProduct.cartquantity -= quantity
 
-                console.log("after", matchingProduct.quantity);
+                console.log("after", matchingProduct.cartquantity);
 
                 await cart.save()
                 res.json({ success: true })
@@ -217,3 +219,10 @@ module.exports = {
     },
 
 }
+
+
+
+
+
+
+

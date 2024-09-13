@@ -12,15 +12,17 @@ module.exports = {
         try {
 
             const userInfo = req.session.user;
-            const products = await productModel.find({ status: true })
-            const category = await categoryModel.find()
+            console.log('/////////////',userInfo)
+            const products = await productModel.find({ status: true });
+            const category = await categoryModel.find({status: true});
+            
             let cart = { cartProducts: [] };
 
             console.log('status ony trueeeeeeeeeeeeeee', cart.cartProducts);
             if (userInfo) {
                 console.log('user indddddddddddddd');
                 cart = await cartModel.findOne({ userId: userInfo._id }).populate('cartProducts.productId');
-                // If cart is not found, ensure cart is still an empty object to prevent errors in the view
+               
                 if (!cart) {
                     cart = { cartProducts: [] };
                 }

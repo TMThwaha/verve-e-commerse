@@ -1,0 +1,538 @@
+<%- include('./partials/userHeader') -%>
+    <%- include('./partials/userHeaderNav') -%>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+        <style>
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f1f3f6;
+                color: #212121;
+            }
+
+            .container-1 {
+                display: flex;
+                min-height: 100vh;
+                width: 80%;
+            }
+
+            .sidebar-1 {
+                width: 280px;
+                background-color: white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+                padding: 20px 0;
+            }
+
+            .user-info {
+                padding: 0 20px 20px;
+                border-bottom: 1px solid #f0f0f0;
+                margin-bottom: 20px;
+            }
+
+            .user-avatar {
+                width: 50px;
+                height: 50px;
+                background-color: #ffd54f;
+                border-radius: 50%;
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .user-name {
+                display: inline-block;
+                margin-left: 10px;
+                vertical-align: middle;
+            }
+
+            .user-name div:first-child {
+                font-size: 12px;
+                color: #878787;
+            }
+
+            .user-name div:last-child {
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+            .nav-item {
+                padding: 12px 20px;
+                color: #2874f0;
+                text-decoration: none;
+                display: block;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .nav-item.active {
+                background-color: #f5faff;
+                font-weight: 500;
+            }
+
+            .sub-item {
+                padding: 8px 20px 8px 40px;
+                color: #212121;
+                font-size: 14px;
+            }
+
+            .main-content {
+                flex-grow: 1;
+                padding: 32px 32px 0;
+            }
+
+            .section-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .section-title h2 {
+                font-weight: 500;
+                font-size: 18px;
+                margin: 0;
+            }
+
+            .edit-link {
+                color: #2874f0;
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+            .info-box {
+                background-color: white;
+                padding: 24px;
+                border-radius: 2px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            }
+
+            .form-row {
+                display: flex;
+                margin-bottom: 24px;
+            }
+
+            .form-row input[type="text"],
+            .form-row input[type="email"],
+            .form-row input[type="tel"] {
+                flex: 1;
+                padding: 8px 16px;
+                margin-right: 16px;
+                border: 1px solid #e0e0e0;
+                border-radius: 2px;
+                font-size: 14px;
+                color: #212121;
+            }
+
+            .form-row input[type="text"]:last-child,
+            .form-row input[type="email"]:last-child,
+            .form-row input[type="tel"]:last-child {
+                margin-right: 0;
+            }
+
+            .radio-group {
+                margin-bottom: 24px;
+            }
+
+            .radio-group>div {
+                font-size: 12px;
+                color: #878787;
+                margin-bottom: 8px;
+            }
+
+            .radio-group label {
+                margin-right: 32px;
+                font-size: 14px;
+                color: #212121;
+            }
+
+            .radio-group input[type="radio"] {
+                margin-right: 8px;
+            }
+
+            .gift-card-balance {
+                float: right;
+                color: #388e3c;
+            }
+
+            .sub-section {
+                margin-bottom: 24px;
+            }
+
+            .sub-section:last-child {
+                margin-bottom: 0;
+            }
+        </style>
+        </head>
+
+        <body>
+            <div class="container-1">
+                <div class="sidebar-1">
+                    <div class="user-info">
+                        <a href="/user-profile">
+                            <div class="user-avatar"></div>
+                        </a>
+                        <div class="user-name">
+                            <div>Hello,</div>
+                            <div>
+                                <%= userDetails.name %>
+                            </div>
+                        </div>
+                    </div>
+                    <nav>
+                        <a href='/user-address' class="nav-item">ADDRESS</a>
+                        <a href="#" class="nav-item">MY ORDERS</a>
+                        <a href="#" class="nav-item ">MY WALLET</a>
+                        <a href="#" class="nav-item">PAYMENTS</a>
+
+
+                    </nav>
+                </div>
+                <div class="main-content">
+                    <div class="section-title">
+                        <h2>Personal Information</h2>
+                    </div>
+                    <div class="info-box">
+                        <div class="form-row">
+                            <input type="text" value="<%= userDetails.name %>">
+                            <a href="#" class="edit-link" id="edit-name-btn">Edit</a>
+                        </div>
+                        <div class="sub-section">
+                            <div class="section-title">
+                                <h2>Email Address</h2>
+                            </div>
+                            <div class="form-row">
+                                <input type="email" value="<%= userDetails.email %>" readonly>
+                            </div>
+                        </div>
+                        <div class="sub-section">
+                            <div class="section-title">
+                                <h2>Password</h2>
+                                <a href="#" class="edit-link" id="edit-password-btn">Edit</a>
+                            </div>
+                            <div class="form-row">
+                                <input type="password" value="********" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal for Editing Name and Password -->
+                <div id="modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <div id="name-edit-section" class="modal-section">
+                            <h2>Edit Name</h2>
+                            <input type="text" id="new-name" placeholder="Enter new name">  
+                            <button id="save-name-btn">Save</button>
+                        </div>
+                        <div id="password-edit-section" class="modal-section" style="display: none;">
+                            <h2>Change Password</h2>
+                            <input type="password" id="current-password" placeholder="Current Password">
+                            <p id="err-2" style="color: red"></p>
+                            <input type="password" id="new-password" placeholder="New Password">
+                            <p id="err-1" style="color: red"></p>
+                            <input type="password" id="confirm-password" placeholder="Confirm New Password">
+                            <p id="err" style="color: red"></p>
+                            <button id="save-password-btn">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <style>
+                /* Modal Styles */
+                .modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                }
+
+                .modal-content {
+                    background-color: #fff;
+                    margin: 15% auto;
+                    padding: 20px;
+                    border-radius: 10px;
+                    width: 40%;
+                    position: relative;
+                }
+
+                .close-btn {
+                    position: absolute;
+                    right: 20px;
+                    top: 10px;
+                    font-size: 25px;
+                    cursor: pointer;
+                }
+
+                .modal-section {
+                    margin-bottom: 20px;
+                }
+
+                .modal-section input {
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 10px;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
+
+                button {
+                    padding: 10px 15px;
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: 5px;
+                }
+
+                button:hover {
+                    background-color: #0056b3;
+                }
+            </style>
+            <script>
+                // Open Modal when clicking the "Edit" button
+                document.getElementById('edit-name-btn').addEventListener('click', function () {
+                    document.getElementById('modal').style.display = 'block';
+                    document.getElementById('name-edit-section').style.display = 'block';
+                    document.getElementById('password-edit-section').style.display = 'none';
+                });
+
+                document.getElementById('edit-password-btn').addEventListener('click', function () {
+                    document.getElementById('modal').style.display = 'block';
+                    document.getElementById('password-edit-section').style.display = 'block';
+                    document.getElementById('name-edit-section').style.display = 'none';
+                });
+
+                // Close Modal
+                document.querySelector('.close-btn').addEventListener('click', function () {
+                    document.getElementById('modal').style.display = 'none';
+                });
+
+                // Save the name
+                // document.getElementById('save-name-btn').addEventListener('click', function() {
+                //     var newName = document.getElementById('new-name').value;
+                //     if (newName) {
+                //         document.getElementById('name-field').value = newName;
+                //         document.getElementById('modal').style.display = 'none';
+                //     }
+                // });
+
+                // Save the password
+                document.getElementById('save-password-btn').addEventListener('click', function () {
+                    var currentPassword = document.getElementById('current-password').value;
+                    var newPassword = document.getElementById('new-password').value;
+                    var confirmPassword = document.getElementById('confirm-password').value;
+                    // document.getElementById('modal').style.display = 'none';
+                    const passwordPattern = /^(?=.*[A-Z])(?=.*\W).{8,}$/;
+
+                    if (!passwordPattern.test(newPassword)) {
+                     return   document.getElementById("err-1").innerText = 'Not a valid password.';
+
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                     return  document.getElementById("err").innerText = "Confirm password is not matching with New password!";
+
+                    }
+
+
+                    fetch('/edit-password', {
+                        method: "post",
+                        headers: {
+                            "content-type": "application/json"
+                        },
+                        body: JSON.stringify({ confirmPassword ,currentPassword})
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.success) {
+                                Toastify({
+                                    text: response.message,
+                                    duration: 3000,
+                                    close: true,
+                                    gravity: "top",
+                                    position: "center",
+                                    backgroundColor: ' #71cd14',
+                                    className: "toastify-custom",
+                                }).showToast();
+                                document.getElementById('modal').style.display = 'none';
+                                setTimeout(() => {
+                                    location.reload()
+                                }, 1500);
+                            }else{
+                                console.log("hiiiii");
+                                return  document.getElementById("err-2").innerText = "Entered wrong password!";
+
+                                
+                            }
+                        })
+                });
+            
+
+                // Close modal when clicking outside the modal content
+                window.onclick = function (event) {
+                    var modal = document.getElementById('modal');
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                };
+
+            
+            </script>
+
+
+
+            <script>
+                document.getElementById("save-name-btn").addEventListener('click', (event) => {
+                    event.preventDefault()
+                    const editName = document.getElementById("new-name").value
+                    console.log("///////////////////////////////////////////////////////////////////////0", editName);
+                    fetch('/edit-name', {
+                        method: "post",
+                        headers: {
+                            "content-type": "application/json"
+                        },
+                        body: JSON.stringify({ editName })
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.success) {
+                                Toastify({
+                                    text: response.message,
+                                    duration: 3000,
+                                    close: true,
+                                    gravity: "top",
+                                    position: "center",
+                                    backgroundColor: ' #71cd14',
+                                    className: "toastify-custom",
+                                }).showToast();
+                                document.getElementById('modal').style.display = 'none';
+
+
+                                // Update the subtotal and grand total
+
+
+
+                                setTimeout(() => {
+                                    location.reload()
+                                }, 1500);
+                                // location.reload()
+
+                            }
+                        })
+                })
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/animsition/js/animsition.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/bootstrap/js/popper.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/select2/select2.min.js"></script>
+            <script>
+                $(".js-select2").each(function () {
+                    $(this).select2({
+                        minimumResultsForSearch: 20,
+                        dropdownParent: $(this).next('.dropDownSelect2')
+                    });
+                })
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/daterangepicker/moment.min.js"></script>
+            <script src="vendor/daterangepicker/daterangepicker.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/slick/slick.min.js"></script>
+            <script src="js/slick-custom.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/parallax100/parallax100.js"></script>
+            <script>
+                $('.parallax100').parallax100();
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+            <script>
+                $('.gallery-lb').each(function () { // the containers for all your galleries
+                    $(this).magnificPopup({
+                        delegate: 'a', // the selector for gallery item
+                        type: 'image',
+                        gallery: {
+                            enabled: true
+                        },
+                        mainClass: 'mfp-fade'
+                    });
+                });
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/isotope/isotope.pkgd.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/sweetalert/sweetalert.min.js"></script>
+            <script>
+                $('.js-addwish-b2').on('click', function (e) {
+                    e.preventDefault();
+                });
+
+                $('.js-addwish-b2').each(function () {
+                    var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+                    $(this).on('click', function () {
+                        swal(nameProduct, "is added to wishlist !", "success");
+
+                        $(this).addClass('js-addedwish-b2');
+                        $(this).off('click');
+                    });
+                });
+
+                $('.js-addwish-detail').each(function () {
+                    var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+
+                    $(this).on('click', function () {
+                        swal(nameProduct, "is added to wishlist !", "success");
+
+                        $(this).addClass('js-addedwish-detail');
+                        $(this).off('click');
+                    });
+                });
+
+                /*---------------------------------------------*/
+
+                $('.js-addcart-detail').each(function () {
+                    var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+                    $(this).on('click', function () {
+                        swal(nameProduct, "is added to cart !", "success");
+                    });
+                });
+
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+            <script>
+                $('.js-pscroll').each(function () {
+                    $(this).css('position', 'relative');
+                    $(this).css('overflow', 'hidden');
+                    var ps = new PerfectScrollbar(this, {
+                        wheelSpeed: 1,
+                        scrollingThreshold: 1000,
+                        wheelPropagation: false,
+                    });
+
+                    $(window).on('resize', function () {
+                        ps.update();
+                    })
+                });
+            </script>
+            <!--===============================================================================================-->
+            <script src="js/main.js"></script>
+
+        </body>
+
+        </html>

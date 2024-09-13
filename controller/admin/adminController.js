@@ -75,15 +75,21 @@ module.exports = {
 
     categoryManagement: async (req, res) => {
         const addCat = await CategoryModel.find();
+        // console.log("check it",addCat);
+
+        
         res.render("admin/categoryManagement", { addCat });
     },
 
     addCategory: async (req, res) => {
-        console.log(req.body);
+        console.log("req.body",req.body);  // Logs the whole request body
+         
+        
        
         
-        const { name } = req.body;
-
+        const { name,description } = req.body;
+        console.log('.............../////////////////.................',description)
+        
         const names = name.toUpperCase()
 
         if (!names) {
@@ -91,14 +97,17 @@ module.exports = {
         }
 
         try {
-            const naMe = await CategoryModel.findOne({name:names});
+            const naMe = await CategoryModel.findOne({name:names})
             if(naMe){
                 
                 return res.status(404).json({ success: false  , message : "Category already exists"});
 
             }
-            const newCat = new CategoryModel({ name : names });
+            const newCat = new CategoryModel({ name : names,description:description });
+           
+            
             await newCat.save();
+            console.log('neeeeeeeeeeeeee',newCat);
             return res.json({ success: true, message: "Category added successfully" });
         } catch (error) {
             console.error("Error adding category:", error);
@@ -131,9 +140,11 @@ module.exports = {
     },
 
     editCategory: async (req, res) => {
-        const { name } = req.body;
+        const { name,description } = req.body;
+        console.log("hhhhhhhhhhhhhhhh",req.body);
+        
         const names = name.toUpperCase()
-        const { id } = req.params;
+        const { id} = req.params;
 
         if (!names) {
             return res.status(400).json({ success: false, message: "Invalid category name. It should only contain letters and spaces." });
@@ -149,7 +160,10 @@ module.exports = {
 
             }
             
-             await CategoryModel.updateOne({ _id: id }, { name:names });
+            await CategoryModel.updateOne(
+                { _id: id },
+                { name: names }
+              );
             res.json({ success: true, message: 'Category updated successfully' });
         } catch (error) {
             console.error('Error updating category:', error);

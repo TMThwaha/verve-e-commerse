@@ -190,6 +190,10 @@
                                         <td>
                                             <%= element.name %>
                                         </td>
+                                       
+                                            <input type="hidden" id="catDes" value='<%=element.description %>'>
+                                        
+                                       
                                         <td><span class="status <%= element.status ? 'active' : 'inactive' %>">
                                                 <%= element.status %>
                                             </span></td>
@@ -242,10 +246,9 @@
                                     <input type="text" class="form-control" id="categoryName"
                                         placeholder="Enter category name" required pattern="[a-z]+"
                                         title="Category name should only contain lowercase letters.">
-                                    <!-- <div class="invalid-feedback">
-                                        Please enter a valid category name with only lowercase letters.
-                                    </div> -->
-
+                                        <label for="description">Description:</label>
+                                        <input type="text" class="form-control" id="CategoryDescription"
+                                        placeholder="Brief description">
                                 </div>
                                 <p id="errMess" style="color: #a81111;"></p>
                                 <button type="submit" id="save-Btn" class="btn btn-success">Save Category</button>
@@ -279,7 +282,13 @@
                                         title="Category name should only contain letters and spaces between words.">
                                     <!-- <div class="invalid-feedback">Please enter a valid category name with only letters
                                         and spaces.</div> -->
+                                        <label for="description">Description:</label>
+                                        <input type="text" class="form-control" id="editCategoryDescription"
+                                        placeholder="Brief description">
+                
+                                        
                                 </div>
+
                                 <p id="errMesss" style="color: #a81111;"></p>
                                 <button type="submit" id="saveEditBtn" class="btn btn-success">Save Changes</button>
                             </form>
@@ -310,10 +319,11 @@
                 const addForm = document.getElementById('addCategoryForm');
                 const categoryNameInput = document.getElementById('categoryName');
                 const errorMessageElement = document.getElementById('errMess');
+                 const CategoryDescription = document.getElementById('CategoryDescription')
                 const submitButton = document.getElementById('save-Btn');
 
                 function validateCategoryName(name) {
-                    return /^[a-zA-Z]{1,10}$/.test(name);
+                    return /^[a-zA-Z]{1,20}$/.test(name);
                 }
 
                 function showError(message) {
@@ -331,7 +341,7 @@
                 categoryNameInput.addEventListener('input', () => {
                     const name = categoryNameInput.value;
                     if (!validateCategoryName(name)) {
-                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                        showError('Category name must be 1-20 letters, no spaces allowed.');
                     } else {
                         clearError();
                     }
@@ -340,18 +350,23 @@
                 addForm.addEventListener('submit', (event) => {
                     event.preventDefault();
                     const name = categoryNameInput.value;
+                    const description = CategoryDescription.value
 
                     if (!validateCategoryName(name)) {
-                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                        showError('Category name must be 1-20 letters, no spaces allowed.');
                         return;
                     }
 
-                    fetch('/admin/add-category', {
+                // const CategoryDescription = document.getElementById('CategoryDescription')
+                console.log(',,,,,,,,,,,,,,,,',description);
+                    
+
+                    fetch('/add-category', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ name: name.toUpperCase() }),
+                        body: JSON.stringify({ name: name.toUpperCase(),description:description }),
                     })
                     .then(response => response.json())
                     .then(data => {
@@ -378,11 +393,12 @@
               document.addEventListener('DOMContentLoaded', () => {
                 const editForm = document.getElementById('editCategoryForm');
                 const editCategoryNameInput = document.getElementById('editCategoryName');
+                const editDescriptionInput = document.getElementById('editCategoryDescription')
                 const errorMessageElement = document.getElementById('errMesss');
                 const submitButton = document.getElementById('saveEditBtn');
 
                 function validateCategoryName(name) {
-                    return /^[a-zA-Z]{1,10}$/.test(name);
+                    return /^[a-zA-Z]{1,20}$/.test(name);
                 }
 
                 function showError(message) {
@@ -400,7 +416,7 @@
                 editCategoryNameInput.addEventListener('input', () => {
                     const name = editCategoryNameInput.value;
                     if (!validateCategoryName(name)) {
-                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                        showError('Category name must be 1-20 letters, no spaces allowed.');
                     } else {
                         clearError();
                     }
@@ -411,18 +427,20 @@
                     const name = editCategoryNameInput.value;
 
                     if (!validateCategoryName(name)) {
-                        showError('Category name must be 1-10 letters, no spaces allowed.');
+                        showError('Category name must be 1-20 letters, no spaces allowed.');
                         return;
                     }
 
                     const categoryId = document.getElementById('editCategoryId').value;
+                    const description=  document.getElementById('catDes').value
+
                     
                     fetch(`/admin/edit-category/${categoryId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ name: name.toUpperCase() }),
+                        body: JSON.stringify({ name: name.toUpperCase(),description:description }),
                     })
                     .then(response => response.json())
                     .then(data => {
@@ -442,7 +460,7 @@
 
                 // Initially disable the submit button
                 submitButton.disabled = true;
-            });
+            })
             </script>
             <script>
                 $(document).ready(function () {
@@ -453,6 +471,10 @@
 
 
                 // Handle Add Category Form Submission
+                // var CategoryDescription = document.getElementById('CategoryDescription')
+                // var description = CategoryDescription.value
+                // console.log('ith verennuuuu',CategoryDescription)
+                
                 document.getElementById('addCategoryForm').addEventListener('submit', function (event) {
                     event.preventDefault();
                     var categoryName = $('#categoryName').val();
@@ -460,7 +482,7 @@
                     fetch('/add-category', {
                         method: "post",
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(categoryData)
+                        body: JSON.stringify(categoryData,description)
                     })
                         .then(response => response.json())
                         .then(response => {
@@ -557,23 +579,31 @@
 
             <script>
 
-                function editCategory(id, name) {
+                function editCategory(id,name) {
+                    const description=  document.getElementById('catDes').value
+                    console.log('...................................',description);
+                    
                     $('#editCategoryModal').modal('show');
 
                     document.getElementById('editCategoryName').value = name
+                    document.getElementById('editCategoryDescription').value=description
 
                     document.getElementById('editCategoryForm').addEventListener('submit', function (event) {
                         event.preventDefault()
 
                         // $('#editCategoryModal').modal('hide');
+                        // const description=  document.getElementById('catDes').value
 
                         const editname = document.getElementById('editCategoryName').value
+                  
+
+
                         fetch(`/edit-category/${id}`, {
                             method: "post",
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ name: editname })
+                            body: JSON.stringify({ name: editname,description:description })
                         })
                             .then(response => response.json())
                             .then(response => {
