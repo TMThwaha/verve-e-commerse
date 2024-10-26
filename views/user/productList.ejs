@@ -1,8 +1,10 @@
 <%- include('./partials/userHeader') -%>
 	<%- include('./partials/userHeaderNav') -%>
 		<!-- Product -->
-		<div class="bg0 m-t-23 p-b-140">
+		<section class="bg0 m-t-23 p-b-140">
 			<div class="container">
+
+
 				<div class="flex-w flex-sb-m p-b-52">
 					<div class="flex-w flex-l-m filter-tope-group m-tb-10">
 						<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
@@ -12,7 +14,7 @@
 							<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
 								data-filter=".<%= element?.name%>">
 								<%= element?.name%>
-							</button>	
+							</button>
 							<% }) %>
 
 					</div>
@@ -36,14 +38,16 @@
 					<!-- Search product -->
 					<div class="dis-none panel-search w-full p-t-10 p-b-15">
 						<div class="bor8 dis-flex p-l-15">
-							<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+							<button id="searchButton" class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
 								<i class="zmdi zmdi-search"></i>
 							</button>
 
-							<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product"
-								placeholder="Search">
+							<input id="searchInput" class="mtext-107 cl2 size-114 plh2 p-r-15" type="text"
+								name="search-product" placeholder="Search">
 						</div>
 					</div>
+
+
 
 					<!-- Filter -->
 					<div class="dis-none panel-filter w-full p-t-10">
@@ -55,37 +59,49 @@
 
 								<ul>
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SortBy">
 											Default
 										</a>
 									</li>
 
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SortBy">
 											Popularity
 										</a>
 									</li>
 
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SortBy">
 											Average rating
 										</a>
 									</li>
 
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SortBy">
 											Newness
 										</a>
 									</li>
 
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SortBy">
 											Price: Low to High
 										</a>
 									</li>
 
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SortBy">
 											Price: High to Low
 										</a>
 									</li>
@@ -94,160 +110,118 @@
 
 							<div class="filter-col2 p-r-15 p-b-27">
 								<div class="mtext-102 cl2 p-b-15">
-									Price
+									Category
 								</div>
 
+								<ul>
+									<li class="p-b-6">
+										<a href="#" class="filter-link stext-106 trans-04 filter-link-active ">
+											All
+										</a>
+									</li>
+									<% category.forEach(element=> { %>
+
+										<li class="p-b-6">
+
+											<a href="#" class="filter-link stext-106 trans-04"
+												style="text-decoration: none;display: flex;justify-content:flex-start;">
+												<input type="checkbox" id="SelectedCategory"
+													value="<%= element.name %>">
+												<%= element.name %>
+											</a>
+										</li>
+										<% }) %>
+								</ul>
+							</div>
+							<div class="filter-col2 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">
+									Brand
+								</div>
+								<ul>
+									<li class="p-b-6">
+										<a href="#" class="filter-link stext-106 trans-04 filter-link-active"
+											style="text-decoration: none;">
+											All
+										</a>
+									</li>
+									<% brand.forEach(element=> { %>
+
+										<li class="p-b-6">
+											<a href="#" class="filter-link stext-106 trans-04"
+												style="text-decoration: none;display: flex;justify-content:flex-start;">
+												<input type="checkbox" id="SelectedBrand" value="<%= element.name %>">
+												<%= element.name %>
+											</a>
+										</li>
+										<% }) %>
+								</ul>
+							</div>
+							<div class="filter-col2 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">
+									Price
+								</div>
 								<ul>
 									<li class="p-b-6">
 										<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
 											All
 										</a>
 									</li>
-
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SelectedPrice">
+
 											$0.00 - $50.00
 										</a>
 									</li>
-
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SelectedPrice">
 											$50.00 - $100.00
 										</a>
 									</li>
-
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SelectedPrice">
 											$100.00 - $150.00
 										</a>
 									</li>
-
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SelectedPrice">
 											$150.00 - $200.00
 										</a>
 									</li>
-
 									<li class="p-b-6">
-										<a href="#" class="filter-link stext-106 trans-04">
+										<a href="#" class="filter-link stext-106 trans-04"
+											style="text-decoration: none;display: flex;justify-content:flex-start;">
+											<input type="checkbox" id="SelectedPrice">
 											$200.00+
 										</a>
 									</li>
 								</ul>
-							</div>
-
-							<div class="filter-col3 p-r-15 p-b-27">
-								<div class="mtext-102 cl2 p-b-15">
-									Color
-								</div>
-
-								<ul>
-									<li class="p-b-6">
-										<span class="fs-15 lh-12 m-r-6" style="color: #222;">
-											<i class="zmdi zmdi-circle"></i>
-										</span>
-
-										<a href="#" class="filter-link stext-106 trans-04">
-											Black
-										</a>
-									</li>
-
-									<li class="p-b-6">
-										<span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
-											<i class="zmdi zmdi-circle"></i>
-										</span>
-
-										<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-											Blue
-										</a>
-									</li>
-
-									<li class="p-b-6">
-										<span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-											<i class="zmdi zmdi-circle"></i>
-										</span>
-
-										<a href="#" class="filter-link stext-106 trans-04">
-											Grey
-										</a>
-									</li>
-
-									<li class="p-b-6">
-										<span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-											<i class="zmdi zmdi-circle"></i>
-										</span>
-
-										<a href="#" class="filter-link stext-106 trans-04">
-											Green
-										</a>
-									</li>
-
-									<li class="p-b-6">
-										<span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-											<i class="zmdi zmdi-circle"></i>
-										</span>
-
-										<a href="#" class="filter-link stext-106 trans-04">
-											Red
-										</a>
-									</li>
-
-									<li class="p-b-6">
-										<span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
-											<i class="zmdi zmdi-circle-o"></i>
-										</span>
-
-										<a href="#" class="filter-link stext-106 trans-04">
-											White
-										</a>
-									</li>
-								</ul>
-							</div>
-
-							<div class="filter-col4 p-b-27">
-								<div class="mtext-102 cl2 p-b-15">
-									Tags
-								</div>
-
-								<div class="flex-w p-t-4 m-r--5">
-									<a href="#"
-										class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-										Fashion
-									</a>
-
-									<a href="#"
-										class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-										Lifestyle
-									</a>
-
-									<a href="#"
-										class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-										Denim
-									</a>
-
-									<a href="#"
-										class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-										Streetstyle
-									</a>
-
-									<a href="#"
-										class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-										Crafts
-									</a>
-								</div>
+								<button id="applyFilter"
+									style="background-color:rgb(61, 136, 234);border-radius: 10px;width: 200px;height: 30px;color: aliceblue;">Apply</button>
 							</div>
 						</div>
 					</div>
+
 				</div>
 
-				<div class="row isotope-grid">
+				<div class="row isotope-grid" id="product-container">
 					<% products.forEach(element=> { %>
 						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%=element?.category?.name%>">
 							<!-- Block2 -->
 							<div class="block2">
 								<div class="block2-pic hov-img0">
-									<a href="/product-detail/<%= element?._id %>"><img
-											src="/uploads/<%= element?.image[0] %>" alt="IMG-PRODUCT"></a>
+
+									<a href="/product-detail/<%= element?._id %>">
+
+										<img src="/uploads/<%= element?.image[0] %>" alt="IMG-PRODUCT">
+									</a>
 
 									<a href="#"
 										class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
@@ -258,13 +232,13 @@
 								<div class="block2-txt flex-w flex-t p-t-14">
 									<div class="block2-txt-child1 flex-col-l ">
 
-										<form action="/product-detail" method="post">
+										<form action="#" method="post">
 											<input class="input100" type="hidden" name="<%= element._id %>" id=""
 												value="">
-											<button class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+											<div class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
 												style="cursor: pointer;" data-id="">
 												<%= element.name %>
-											</button>
+											</div>
 										</form>
 										<span class="stext-105 cl3">
 											<%= element.price %>
@@ -272,13 +246,15 @@
 									</div>
 
 									<div class="block2-txt-child2 flex-r p-t-3">
-										<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+										<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+											data-id="<%= element._id %>">
 											<img class="icon-heart1 dis-block trans-04"
 												src="/images/icons/icon-heart-01.png" alt="ICON">
 											<img class="icon-heart2 dis-block trans-04 ab-t-l"
 												src="/images/icons/icon-heart-02.png" alt="ICON">
 										</a>
 									</div>
+
 								</div>
 							</div>
 						</div>
@@ -288,14 +264,36 @@
 
 				<!-- Load more -->
 				<div class="flex-c-m flex-w w-full p-t-45">
-					<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-						Load More
-					</a>
+					<% if (totalPages > 1) { %>
+						<nav aria-label="Page navigation">
+							<ul class="pagination">
+								<% if (currentPage > 1) { %>
+									<li class="page-item">
+										<a class="page-link" href="?page=<%= currentPage - 1 %>" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+								<% } %>
+								
+								<% for (let i = 1; i <= totalPages; i++) { %>
+									<li class="page-item <%= i === currentPage ? 'active' : '' %>">
+										<a class="page-link" href="?page=<%= i %>"><%= i %></a>
+									</li>
+								<% } %>
+								
+								<% if (currentPage < totalPages) { %>
+									<li class="page-item">
+										<a class="page-link" href="?page=<%= currentPage + 1 %>" aria-label="Next">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								<% } %>
+							</ul>
+						</nav>
+					<% } %>
 				</div>
 			</div>
-		</div>
-
-
+		</section>
 		<!-- Footer -->
 		<footer class="bg3 p-t-75 p-b-32">
 			<div class="container">
@@ -436,7 +434,7 @@
 
 					<p class="stext-107 cl6 txt-center">
 						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-						Copyright &copy;
+						Copyright & copy;
 						<script>document.write(new Date().getFullYear());</script> All rights reserved |Made with <i
 							class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
 							target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com"
@@ -623,7 +621,193 @@
 
 
 
+		<script>
+			document.getElementById('applyFilter').addEventListener('click', function () {
+				// Get checked checkboxes from the Sort By section
+				let sortBy = Array.from(document.querySelectorAll('#SortBy:checked')).map(checkbox => checkbox.nextSibling.textContent.trim());
 
+				// Get checked checkboxes from the Category section
+				let selectedCategories = Array.from(document.querySelectorAll('#SelectedCategory:checked')).map(checkbox => checkbox.value);
+
+				// Get checked checkboxes from the Brand section
+				let selectedBrands = Array.from(document.querySelectorAll('#SelectedBrand:checked')).map(checkbox => checkbox.value);
+
+				// Get checked checkboxes from the Price section
+				let selectedPrices = Array.from(document.querySelectorAll('#SelectedPrice:checked')).map(checkbox => checkbox.nextSibling.textContent.trim());
+
+				// Get the value of the search input field
+				let searchInput = document.getElementById('searchInput').value.trim();
+
+				// Log the gathered data
+				console.log("Sort By:", sortBy);
+				console.log("Selected Categories:", selectedCategories);
+				console.log("Selected Brands:", selectedBrands);
+				console.log("Selected Prices:", selectedPrices);
+				console.log("Search Value:", searchInput);
+
+				// Prepare the data to send to the backend
+				const data = new URLSearchParams({
+					selectedBrands,
+					selectedCategories,
+					selectedPrices,
+					sortBy,
+					searchValue: searchInput // Add searchValue to the request
+				});
+
+				console.log('Data being sent to backend:', data);
+
+				// Send the data to the backend
+				fetch(`/filterProduct?${data.toString()}`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok ' + response.statusText);
+						}
+						return response.json();
+					})
+					.then(data => {
+						if (data.success) {
+							console.log("Products:", data.products);
+							renderProducts(data.products); // Render the filtered products
+						} else {
+							console.error('Error in response data:', data);
+						}
+					})
+					.catch(error => {
+						console.error('Fetch error:', error);
+					});
+
+				// Further processing or sending the selected data to the backend can be done here.
+			});
+
+			// Get the search input field element
+			let searchInput = document.getElementById('searchInput');
+
+			// Add an event listener for live typing
+			searchInput.addEventListener('input', function () {
+				// Get the live value of the input field
+				let SearchValue = searchInput.value.trim();
+
+				// Log or perform any action with the live search value
+				console.log("Live search input:", SearchValue);
+
+				// You can implement search logic here (e.g., filter products, suggest items, etc.)
+			});
+
+
+
+
+
+
+
+
+
+
+			const productsGrid = document.getElementById('product-container');
+
+function renderProducts(products) {
+  productsGrid.innerHTML = ''; // Clear the current products
+
+  if (products.length === 0) {
+    productsGrid.innerHTML = `
+      <div class="col-12 text-center p-5">
+        <h3 class="text-muted">No products found</h3>
+      </div>
+    `;
+    return;
+  }
+
+  products.forEach(product => {
+    if (product.status === true) {
+      const stockBadgeColor = product.stock === 0 ? 'bg-danger' : product.stock < 10 ? 'bg-warning' : 'bg-success';
+      const stockText = product.stock === 0 ? 'Out of Stock' : product.stock < 10 ? 'Limited Stock' : 'In Stock';
+
+      const productHTML = `
+        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.category?.name || ''}">
+          <div class="block2">
+            <div class="block2-pic hov-img0 position-relative">
+              <img src="/uploads/${product.image[0]}" alt="${product.name}" class="img-fluid">
+              <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+                Quick View
+              </a>
+              <span class="position-absolute top-0 end-0 m-2 badge ${stockBadgeColor}">${stockText}</span>
+            </div>
+            <div class="block2-txt flex-w flex-t p-t-14">
+              <div class="block2-txt-child1 flex-col-l">
+                <a href="/product-detail/${product._id}" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                  ${product.name}
+                </a>
+                <span class="stext-105 cl3">
+                  ₹${product.price}
+                  ${product.offerPrice ? `<span class="text-decoration-line-through ms-2">₹${product.offerPrice}</span>` : ''}
+                  ${product.category?.offerPrice ? `<span class="badge bg-danger ms-2">${product.category.offerPrice} Off</span>` : ''}
+                </span>
+              </div>
+              <div class="block2-txt-child2 flex-r p-t-3">
+                <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2" data-id="${product._id}">
+                  <img class="icon-heart1 dis-block trans-04" src="/images/icons/icon-heart-01.png" alt="ICON">
+                  <img class="icon-heart2 dis-block trans-04 ab-t-l" src="/images/icons/icon-heart-02.png" alt="ICON">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      productsGrid.innerHTML += productHTML;
+    }
+  });
+}
+
+// Call this function with your products array
+// renderProductGrid(products);
+
+
+		</script>
+		<script>
+			let SearchInput = document.getElementById('searchInput');
+			
+			// Add an event listener for live typing
+			SearchInput.addEventListener('input', function () {
+				// Get the live value of the input field
+				let searchValue = SearchInput.value.trim();
+			
+				// Log or perform any action with the live search value
+				console.log("Live search input:", searchValue);
+			
+				const data = new URLSearchParams({
+					searchValue: searchValue // Use the value, not the element
+				});
+			
+				// You can implement search logic here (e.g., filter products, suggest items, etc.)
+				fetch(`/searchProduct?${data.toString()}`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok ' + response.statusText);
+					}
+					return response.json();
+				})
+				.then(data => {
+					if (data.success) {
+						console.log("Products:", data.products);
+						renderProducts(data.products); // Render the filtered products
+					} else {
+						console.error('Error in response data:', data);
+					}
+				})
+				.catch(error => {
+					console.error('Fetch error:', error);
+				});
+			});
+			</script>
 
 
 
@@ -673,31 +857,70 @@
 		<script src="vendor/isotope/isotope.pkgd.min.js"></script>
 		<!--===============================================================================================-->
 		<script src="vendor/sweetalert/sweetalert.min.js"></script>
+
 		<script>
-			$('.js-addwish-b2, .js-addwish-detail').on('click', function (e) {
-				e.preventDefault();
-			});
+			// $('.js-addwish-b2, .js-addwish-detail').on('click', function (e) {
+			// 	e.preventDefault();
+			// });
 
-			$('.js-addwish-b2').each(function () {
-				var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-				$(this).on('click', function () {
-					swal(nameProduct, "is added to wishlist !", "success");
 
-					$(this).addClass('js-addedwish-b2');
-					$(this).off('click');
+			document.addEventListener('DOMContentLoaded', function () {
+				// Select all wishlist buttons
+				const wishlistButtons = document.querySelectorAll('.js-addwish-b2');
+
+				// Add a click event listener to each button
+				wishlistButtons.forEach(button => {
+					button.addEventListener('click', function (event) {
+						event.preventDefault(); // Prevent the default behavior
+
+						// Get the product ID from the data-id attribute
+						const productId = this.getAttribute('data-id');
+						const nameProduct = this.parentElement.parentElement.querySelector('.js-name-b2').innerHTML;
+						console.log(productId, 'pppppppppppppppppppppppppppp');
+
+
+						// Trigger the SweetAlert notification
+						swal(nameProduct, "is added to wishlist!", "success");
+
+						// Send productId via AJAX request
+						fetch('/added-wishlist', {
+							method: 'POST',
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({ productId: productId }) // Pass productId in the body
+						})
+							.then(response => response.json())
+							.then(data => {
+
+								if (data.success) {
+
+
+									console.log('Product added to wishlist:', data);
+								}
+
+							})
+							.catch(error => {
+								console.error('Error:', error);
+							});
+
+						// Add a class and disable further clicks on this button
+						this.classList.add('js-addedwish-b2');
+						this.removeEventListener('click', arguments.callee);
+					});
 				});
 			});
 
-			$('.js-addwish-detail').each(function () {
-				var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+			// $('.js-addwish-detail').each(function () {
+			// 	var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
 
-				$(this).on('click', function () {
-					swal(nameProduct, "is added to wishlist !", "success");
+			// 	$(this).on('click', function () {
+			// 		swal(nameProduct, "is added to wishlist !", "success");
 
-					$(this).addClass('js-addedwish-detail');
-					$(this).off('click');
-				});
-			});
+			// 		$(this).addClass('js-addedwish-detail');
+			// 		$(this).off('click');
+			// 	});
+			// });
 
 			/*---------------------------------------------*/
 

@@ -851,3 +851,151 @@
                         <label><input type="radio" name="addressType" value="Home"> Home</label>
                         <label><input type="radio" name="addressType" value="Work"> Work</label>
                     </div> -->
+
+
+
+
+
+
+					<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        .search-input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .order-item {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .product-details {
+            flex-grow: 1;
+        }
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #202124;
+        }
+        .product-meta {
+            color: #5f6368;
+            font-size: 0.9em;
+        }
+        .product-price {
+            font-weight: bold;
+            color: #202124;
+            margin-top: 5px;
+        }
+        .order-status {
+            text-align: right;
+        }
+        .delivered {
+            color: #188038;
+            font-weight: bold;
+        }
+        .delivery-info {
+            color: #5f6368;
+            font-size: 0.9em;
+        }
+        .review-link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search your orders here">
+        <button class="search-button">Search Orders</button>
+    </div>
+
+    <div class="order-item">
+        <img src="https://placeholder.com/80x80" alt="U.S. Polo Assn. Denim Co. Regular Men Bl..." class="product-image">
+        <div class="product-details">
+            <div class="product-name">U.S. Polo Assn. Denim Co. Regular Men Bl...</div>
+            <div class="product-meta">Color: Black Size: 28</div>
+            <div class="product-price">₹3,649</div>
+        </div>
+        <div class="order-status">
+            <div class="delivered">Delivered on Aug 12</div>
+            <div class="delivery-info">Your item has been delivered</div>
+            <a href="#" class="review-link">Rate & Review Product</a>
+        </div>
+    </div>
+
+    <div class="order-item">
+        <img src="https://placeholder.com/80x80" alt="PaxMore Heat, Foldable, Rechargeable, Sp..." class="product-image">
+        <div class="product-details">
+            <div class="product-name">PaxMore Heat, Foldable, Rechargeable, Sp...</div>
+            <div class="product-meta">Color: Black</div>
+            <div class="product-price">₹553</div>
+        </div>
+        <div class="order-status">
+            <div class="delivered">Delivered on Mar 21</div>
+            <div class="delivery-info">Your item has been delivered</div>
+            <a href="#" class="review-link">Rate & Review Product</a>
+        </div>
+    </div>
+
+    <div class="order-item">
+        <img src="https://placeholder.com/80x80" alt="Kostech Micro Needles (0.25mm) Derma Rol..." class="product-image">
+        <div class="product-details">
+            <div class="product-name">Kostech Micro Needles (0.25mm) Derma Rol...</div>
+            <div class="product-price">₹225</div>
+        </div>
+        <div class="order-status">
+            <div class="delivered">Delivered on Mar 21</div>
+            <div class="delivery-info">Your item has been delivered</div>
+            <a href="#" class="review-link">Rate & Review Product</a>
+        </div>
+    </div>
+
+    <div class="order-item">
+        <img src="https://placeholder.com/80x80" alt="ARISTOCRAT Cabin+Medium (55+65 cm) Poly ..." class="product-image">
+        <div class="product-details">
+            <div class="product-name">ARISTOCRAT Cabin+Medium (55+65 cm) Poly ...</div>
+            <div class="product-meta">Color: Teal</div>
+            <div class="product-price">₹3,539</div>
+        </div>
+        <div class="order-status">
+            <div class="delivered">Delivered on Mar 19</div>
+            <div class="delivery-info">Your item has been delivered</div>
+            <a href="#" class="review-link">Rate & Review Product</a>
+        </div>
+    </div>
+</body>
+</html>

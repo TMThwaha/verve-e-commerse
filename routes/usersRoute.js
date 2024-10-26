@@ -4,8 +4,12 @@ const homecontroller=require('../controller/user/userHomeController');
 // const middleware = require("../middleware/userMiddleware");
 const userProductController = require('../controller/user/userProductController');
 const cartController = require('../controller/user/cartController');
-const userProfileController = require('../controller/user/userProfileController')
+const userProfileController = require('../controller/user/userProfileController');
+const wishListController = require('../controller/user/wishListController');
 const {Authenticated,checkOtpVerfy,  blockedUser,userthere}=  require("../middleware/userMiddleware");
+const WishList = require('../model/wishlistModel');
+const filterController = require('../controller/user/filterController');
+const razorPayController = require('../controller/user/razorPayController');
 
 
 
@@ -53,6 +57,30 @@ router.post('/edit-name',userProfileController.editName)
 router.post('/edit-password',userProfileController.editPassword)
 router.get('/user-address',userProfileController.userAddress);
 router.post('/save-address',userProfileController.saveAddress);
-router.post('/edit-address/:id',userProfileController.editAddress)
+router.post('/edit-address/:id',userProfileController.editAddress);
+
+router.get('/user-orders',userProfileController.userOrder);
+
+router.get('/checkout',cartController.checkout)
+router.post('/coupon',cartController.coupons)
+router.post('/process-order',cartController.placeOrder);
+router.get('/order-confirm',cartController.orderConfirm);
+
+
+
+router.get('/wishlist',wishListController.addtoWishlist);
+router.post('/added-wishlist',wishListController.addedtoWishlist);
+
+router.post('/wishlist-remove',wishListController.removeWishlist)
+
+router.get('/filterProduct',filterController.filterProducts);
+
+
+router.get('/searchProduct',filterController.searchProducts);
+
+router.get('/razor-key',razorPayController.razorKey);
+router.post('/razor-order',razorPayController.RazorOrder);
+
+
 
 module.exports = router;

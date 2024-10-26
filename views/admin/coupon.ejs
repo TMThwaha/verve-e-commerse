@@ -1,0 +1,772 @@
+<%- include('../admin/partials/adminSlidebar') %>
+    <%- include('../admin/partials/adminNav') %>
+
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>User Data Table</title>
+            <!-- SweetAlert CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+            <!-- DataTables CSS -->
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+            <!-- Bootstrap CSS -->
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                :root {
+                    --primary-color: #000000;
+                    --secondary-color: #404040;
+                    --background-color: #FFFFFF;
+                    --text-color: #000000;
+                    --border-color: #CCCCCC;
+                    --border-radius: 4px;
+                    --padding: 16px;
+                    --margin: 16px;
+                    --font-family: 'Arial', sans-serif;
+                }
+
+                body {
+                    background: var(--grey);
+                    overflow-x: hidden;
+                }
+
+                th,
+                td {
+                    padding: 15px;
+                    text-align: left;
+                    border-bottom: 1px solid var(--border-color);
+                }
+
+                th {
+                    background-color: var(--primary-color);
+                    color: var(--background-color);
+                    text-transform: uppercase;
+                }
+
+                tr:hover {
+                    background-color: #F5F5F5;
+                }
+
+                tr:nth-child(even) {
+                    background-color: #F9F9F9;
+                }
+
+                .status {
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    font-weight: bold;
+                }
+
+                .active {
+                    background-color: #000000;
+                    color: var(--background-color);
+                }
+
+                .inactive {
+                    background-color: #707070;
+                    color: var(--background-color);
+                }
+
+                .block-btn,
+                .add-btn {
+                    background-color: #a81111;
+                    color: var(--background-color);
+                    border: none;
+                    padding: 8px 12px;
+                    cursor: pointer;
+                    border-radius: var(--border-radius);
+                    transition: background-color 0.3s;
+                }
+
+                .block-btn:hover,
+                .add-btn:hover {
+                    background-color: #000000;
+                }
+
+                #data-table {
+                    width: 97%;
+                    margin-left: 20px;
+                    margin-top: 43px;
+                }
+
+                #content main {
+                    width: 100%;
+                    padding: var(--padding);
+                    font-family: var(--font-family);
+                    max-height: calc(100vh - 56px);
+                    overflow-y: auto;
+                }
+
+                #content main .head-title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    grid-gap: 16px;
+                    flex-wrap: wrap;
+                }
+
+                #content main .head-title .left h1 {
+                    font-size: 36px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                    color: var(--text-color);
+                }
+
+                #content main .head-title .left .breadcrumb {
+                    display: flex;
+                    align-items: center;
+                    grid-gap: 16px;
+                }
+
+                #content main .head-title .left .breadcrumb li {
+                    margin-right: 8px;
+                }
+
+                #content main .head-title .left .breadcrumb li a {
+                    text-decoration: none;
+                    color: var(--text-color);
+                }
+
+                #content main .head-title .left .breadcrumb li a.Active {
+                    color: var(--primary-color);
+                }
+
+                #content main .head-title .btn-download {
+                    height: 36px;
+                    padding: 0 16px;
+                    border-radius: 36px;
+                    background: var(--primary-color);
+                    color: var(--background-color);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    grid-gap: 10px;
+                    font-weight: 500;
+                }
+
+                .add-btn-container {
+                    text-align: right;
+                    margin: 16px 20px 0 0;
+                }
+
+                .is-invalid {
+                    border-color: #dc3545;
+                }
+
+                .invalid-feedback {
+                    display: none;
+                    color: #dc3545;
+                }
+
+                .was-validated .form-control:invalid {
+                    border-color: #dc3545;
+                }
+
+                .was-validated .form-control:invalid~.invalid-feedback {
+                    display: block;
+                }
+            </style>
+        </head>
+
+        <body>
+            <section id="content">
+                <main>
+                    <div class="head-title">
+                        <div class="left">
+                            <h1>Coupon Management</h1>
+                            <ul class="breadcrumb">
+                                <li><a href="#">Home</a></li>
+                                <li><i class='bx bx-chevron-right'></i></li>
+                                <li><a class="Active" href="#">Coupons</a></li>
+                            </ul>
+                        </div>
+                        <div class="add-btn-container">
+                            <button class="add-btn" style="height: 40px;" data-toggle="modal"
+                                data-target="#addCategoryModal">Add Coupon</button>
+                        </div>
+                    </div>
+
+                    <div id="data-table">
+                        <table id="userTable">
+                            <thead>
+                                <tr>
+                                    <th>Coupon code</th>
+                                    <th>Minimum purchase</th>
+                                    <th>Discount Amount</th>
+                                    <th>Date</th>
+                                    <th>Expiry date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <% coupons.forEach(element=> { %>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <%= element.couponCode %>
+                                        </td>
+                                        <td>₹<%= element.minPurchaseAmount %>
+                                        </td>
+                                        <td>₹<%= element.discountAmount %>
+                                        </td>
+                                        <td class="date" data-date="<%= element.date.toISOString().split('T')[0] %>">
+                                            <%= element.date.toLocaleString('en-IN', { dateStyle: 'short' }) %>
+                                        </td>
+                                        <td class="expiry-date"
+                                            data-date="<%= element.expiryDate.toISOString().split('T')[0] %>">
+                                            <%= element.expiryDate.toLocaleString('en-IN', { dateStyle: 'short' }) %>
+                                        </td>
+                                        <td>
+                                            <button
+                                                onclick="editCategory('<%= element.couponCode %>', '<%= element.minPurchaseAmount %>', '<%= element.discountAmount %>', this)"
+                                                class="block-btn">Edit</button>
+                                            <button onclick="deleteCoupon('')" class="block-btn">Delete</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <% }) %>
+                        </table>
+                    </div>
+                </main>
+            </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- !-- Add Coupon Modal -->
+            <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog"
+                aria-labelledby="addCouponModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCouponModalLabel">Add Coupon</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addCouponForm" novalidate>
+                                <!-- Coupon Code -->
+                                <div class="form-group">
+                                    <label for="couponCode">Coupon Code</label>
+                                    <input type="text" class="form-control" id="couponCode"
+                                        placeholder="Enter coupon code" required minlength="3">
+                                    <div class="invalid-feedback">Please enter a valid coupon code (at least 3
+                                        characters).</div>
+                                    <p id="duplicateError" style="color: red;"></p>
+                                    <p class="error-message" id="couponCodeError" style="color: red; display: none;">
+                                    </p>
+
+                                </div>
+
+                                <!-- Minimum Purchase -->
+                                <div class="form-group">
+                                    <label for="minPurchase">Minimum Purchase</label>
+                                    <input type="number" class="form-control" id="minPurchase"
+                                        placeholder="Enter minimum purchase amount" required>
+                                    <div class="invalid-feedback">Please enter a valid minimum purchase amount.</div>
+                                    <p class="error-message" id="minPurchaseAmountError"
+                                        style="color: red; display: none;"></p>
+
+                                </div>
+
+                                <!-- Discount Amount -->
+                                <div class="form-group">
+                                    <label for="discountAmount">Discount Amount</label>
+                                    <input type="text" class="form-control" id="discountAmount"
+                                        placeholder="Enter discount amount" required>
+                                    <div class="invalid-feedback">Please enter a valid discount amount.</div>
+                                    <p class="error-message" id="discountAmountError"
+                                        style="color: red; display: none;"></p>
+
+                                </div>
+
+                                <!-- Start Date -->
+                                <div class="form-group">
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" required>
+                                    <div class="invalid-feedback">Please select a valid start date.</div>
+                                    <p class="error-message" id="Error" style="color: red; display: none;"></p>
+
+                                </div>
+
+                                <!-- Expiry Date -->
+                                <div class="form-group">
+                                    <label for="expiryDate">Expiry Date</label>
+                                    <input type="date" class="form-control" id="expiryDate" required>
+                                    <div class="invalid-feedback">Please select a valid expiry date.</div>
+                                    <p class="error-message" id="Error" style="color: red; display: none;"></p>
+
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" id="save-Btn" class="btn btn-success">Save Coupon</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Edit Coupon Modal -->
+            <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog"
+                aria-labelledby="editCouponModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editCouponModalLabel">Edit Coupon</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editCouponForm" novalidate>
+                                <!-- Hidden input for coupon ID -->
+                                <input type="hidden" id="editCouponId">
+
+                                <!-- Coupon Code -->
+                                <div class="form-group">
+                                    <label for="editCouponCode">Coupon Code</label>
+                                    <input type="text" class="form-control" id="editCouponCode"
+                                        placeholder="Enter coupon code" required minlength="3">
+                                    <div class="invalid-feedback">Please enter a valid coupon code (at least 3
+                                        characters).</div>
+                                    <p id="editDuplicateError" style="color: red;"></p>
+                                </div>
+
+                                <!-- Minimum Purchase -->
+                                <div class="form-group">
+                                    <label for="editMinPurchase">Minimum Purchase</label>
+                                    <input type="number" class="form-control" id="editMinPurchasee"
+                                        placeholder="Enter minimum purchase amount" required>
+                                    <div class="invalid-feedback">Please enter a valid minimum purchase amount.</div>
+                                </div>
+
+                                <!-- Discount Amount -->
+                                <div class="form-group">
+                                    <label for="editDiscountAmount">Discount Amount</label>
+                                    <input type="number" class="form-control" id="editDiscountAmount"
+                                        placeholder="Enter discount amount" required>
+                                    <div class="invalid-feedback">Please enter a valid discount amount.</div>
+                                </div>
+
+                                <!-- Start Date -->
+                                <div class="form-group">
+                                    <label for="editStartDate">Start Date</label>
+                                    <input type="date" class="form-control" id="editStartDatee" required>
+                                    <div class="invalid-feedback">Please select a valid start date.</div>
+                                </div>
+
+                                <!-- Expiry Date -->
+                                <div class="form-group">
+                                    <label for="editExpiryDate">Expiry Date</label>
+                                    <input type="date" class="form-control" id="editExpiryDate" required>
+                                    <div class="invalid-feedback">Please select a valid expiry date.</div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" id="saveEditCouponBtn" class="btn btn-success">Save
+                                    Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <!-- jQuery -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <!-- DataTables JS -->
+            <script type="text/javascript" charset="utf8"
+                src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+            <!-- Bootstrap JS -->
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const form = document.getElementById('addCategoryForm');
+                    const categoryNameInput = document.getElementById('categoryName');
+
+                    form.addEventListener('submit', (event) => {
+                        event.preventDefault();
+
+
+                        const trimmedValue = categoryNameInput.value.trim();
+
+                        if (trimmedValue === '') {
+                            categoryNameInput.setCustomValidity('Brand name cannot be empty or only spaces.');
+                        } else if (!/^[A-Za-z\s]+$/.test(trimmedValue)) {
+                            categoryNameInput.setCustomValidity('Brand name can only contain letters and spaces.');
+                        } else {
+                            categoryNameInput.setCustomValidity('');
+                        }
+
+                        if (form.checkValidity()) {
+                            // Form is valid, proceed with form submission or AJAX request
+                            alert('Form is valid! Submitting...');
+                            // Example: You could use AJAX here to submit the form
+                        } else {
+                            // Form is invalid, show validation errors
+                            form.classList.add('was-validated');
+                        }
+                    });
+
+                    // Optional: Add event listener for input validation
+                    categoryNameInput.addEventListener('input', () => {
+                        // Trim spaces from the input value
+                        const trimmedValue = categoryNameInput.value.trim();
+
+                        if (trimmedValue === '') {
+                            categoryNameInput.setCustomValidity('Brand name cannot be empty or only spaces.');
+                            categoryNameInput.classList.add('is-invalid');
+                        } else if (!/^[A-Za-z\s]+$/.test(trimmedValue)) {
+                            categoryNameInput.setCustomValidity('Brand name can only contain letters and spaces.');
+                            categoryNameInput.classList.add('is-invalid');
+                        } else {
+                            categoryNameInput.setCustomValidity(''); // Reset custom validity
+                            categoryNameInput.classList.remove('is-invalid');
+                        }
+                    });
+                });
+
+            </script>
+
+            <script>
+                $(document).ready(function () {
+                    $('#userTable').DataTable();
+                });
+
+
+
+
+                // Handle Add Brand Form Submission
+                document.getElementById('addCategoryForm').addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    var categoryName = $('#categoryName').val();
+                    var categoryData = { name: categoryName };
+                    fetch('/addBrand', {
+                        method: "post",
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(categoryData)
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (response.success) {
+                                $('#addCategoryModal').modal('hide');
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000);
+                            }
+                        });
+                });
+
+            </script>
+            <!-- SweetAlert JS -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+
+            <!-- Add Coupon Modal -->
+
+
+            <!-- JavaScript -->
+            <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+            <script>
+                document.getElementById('addCouponForm').addEventListener('submit', function (e) {
+                    e.preventDefault(); // Prevent default form submission
+
+
+                    // Gather data from the form
+                    const couponData = {
+                        couponCode: document.getElementById('couponCode').value,
+                        minPurchase: document.getElementById('minPurchase').value,
+                        discountAmount: document.getElementById('discountAmount').value,
+                        startDate: document.getElementById('startDate').value,
+                        expiryDate: document.getElementById('expiryDate').value
+
+                    };
+                    console.log('couponcouponcpoioiucjpoijcoij', couponData);
+
+
+                    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+                    let isValid = true;
+
+                    // Coupon Code: at least one special character and one number
+                    if (!/^(?=.*[!@#$%^&*])(?=.*\d).+$/.test(couponData.couponCode)) {
+                        isValid = false;
+                        document.getElementById('couponCodeError').textContent = 'Coupon Code must contain at least one special character and one number.';
+                        document.getElementById('couponCodeError').style.display = 'block';
+                    }
+
+                    // MinPurchaseAmount and DiscountAmount: must be non-negative numbers
+                    if (isNaN(couponData.minPurchase) || couponData.minPurchase < 0) {
+                        isValid = false;
+                        document.getElementById('minPurchaseAmountError').textContent = 'Minimum Purchase Amount must be a non-negative number.';
+                        document.getElementById('minPurchaseAmountError').style.display = 'block';
+                    }
+
+                    if (isNaN(couponData.discountAmount) || couponData.discountAmount <= 0) {
+                        isValid = false;
+                        document.getElementById('discountAmountError').textContent = 'Discount Amount must be a positive number.';
+                        document.getElementById('discountAmountError').style.display = 'block';
+                    }
+
+                    // Discount Amount must be greater than MinPurchaseAmount
+                    if (couponData.minPurchase <= couponData.discountAmount) {
+                        isValid = false;
+                        document.getElementById('discountAmountError').textContent = 'Discount Amount must be less than Minimum Purchase Amount.';
+                        document.getElementById('discountAmountError').style.display = 'block';
+                    }
+
+
+                    if (couponData.expiryDate < couponData.startDate) {
+                        document.getElementById('Error').textContent = "expiryDate cannot be less than Start Date";
+                        document.getElementById('Error').style.display = 'block';
+                        isValid = false;
+                    }
+                    // Show error message if validation fails
+                    if (!isValid) {
+                        return;
+                    }
+
+
+                    // Validate the form inputs (optional, for additional custom validation)
+                    if (couponData.couponCode.length < 3) {
+                        alert('Coupon code must be at least 3 characters.');
+                        return;
+                    }
+
+                    // Send the data to the backend using fetch
+                    fetch('/add-coupon', {  // Replace with your backend URL
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(couponData)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Optionally, show a success message or close the modal
+                                $('#addCategoryModal').modal('hide');
+                                Toastify({
+                                    text: "Coupon successfully added!",
+                                    duration: 3000,   // Duration in milliseconds (3 seconds)
+                                    close: true,      // Display close icon
+                                    gravity: "top",   // `top` or `bottom`
+                                    position: "center", // `left`, `center` or `right`
+                                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Success theme colors
+                                    stopOnFocus: true, // Prevents dismissing on hover
+                                    className: "success-toast", // Additional CSS class for custom styling
+                                }).showToast();
+
+                                setTimeout(() => {
+                                    location.reload()
+                                }, 2000);
+
+                            } else {
+                                document.getElementById('duplicateError').innerText = data.message
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            </script>
+
+            <script>
+                document.getElementById('editCouponForm').addEventListener('submit', function (e) {
+                    e.preventDefault(); // Prevent default form submission
+
+                    console.log("lllllllllllllllllllllllllllllll");
+
+                    // Gather data from the form
+                    const couponData = {
+                        couponId: document.getElementById('editCouponId').value,  // Hidden field for coupon ID
+                        couponCode: document.getElementById('editCouponCode').value,
+                        minPurchase: document.getElementById('editMinPurchase').value,
+                        discountAmount: document.getElementById('editDiscountAmount').value,
+                        startDate: document.getElementById('editStartDate').value,
+                        expiryDate: document.getElementById('editExpiryDate').value
+                    };
+
+                    console.log('Editing coupon data:', couponData);
+
+                    // Hide all error messages initially
+                    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+                    let isValid = true;
+
+                    // Coupon Code: at least one special character and one number
+                    if (!/^(?=.*[!@#$%^&*])(?=.*\d).+$/.test(couponData.couponCode)) {
+                        isValid = false;
+                        document.getElementById('couponCodeError').textContent = 'Coupon Code must contain at least one special character and one number.';
+                        document.getElementById('couponCodeError').style.display = 'block';
+                    }
+
+                    // MinPurchaseAmount and DiscountAmount: must be non-negative numbers
+                    if (isNaN(couponData.minPurchase) || couponData.minPurchase < 0) {
+                        isValid = false;
+                        document.getElementById('minPurchaseAmountError').textContent = 'Minimum Purchase Amount must be a non-negative number.';
+                        document.getElementById('minPurchaseAmountError').style.display = 'block';
+                    }
+
+                    if (isNaN(couponData.discountAmount) || couponData.discountAmount <= 0) {
+                        isValid = false;
+                        document.getElementById('discountAmountError').textContent = 'Discount Amount must be a positive number.';
+                        document.getElementById('discountAmountError').style.display = 'block';
+                    }
+
+                    // Discount Amount must be greater than MinPurchaseAmount
+                    if (couponData.minPurchase <= couponData.discountAmount) {
+                        isValid = false;
+                        document.getElementById('discountAmountError').textContent = 'Discount Amount must be less than Minimum Purchase Amount.';
+                        document.getElementById('discountAmountError').style.display = 'block';
+                    }
+
+                    // Expiry Date should be greater than or equal to the Start Date
+                    if (couponData.expiryDate < couponData.startDate) {
+                        document.getElementById('Error').textContent = "Expiry Date cannot be earlier than Start Date.";
+                        document.getElementById('Error').style.display = 'block';
+                        isValid = false;
+                    }
+
+                    // Stop if validation fails
+                    if (!isValid) {
+                        return;
+                    }
+
+                    // Validate the coupon code length
+                    if (couponData.couponCode.length < 3) {
+                        alert('Coupon code must be at least 3 characters.');
+                        return;
+                    }
+
+                    // Send the data to the backend using fetch (Replace with your actual backend URL)
+                    fetch('/edit-coupon', {
+                        method: 'POST',  // or PUT if you use RESTful standards
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(couponData)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Optionally, show a success message or close the modal
+                                $('#editCouponModal').modal('hide');
+                                Toastify({
+                                    text: "Coupon successfully updated!",
+                                    duration: 3000,   // Duration in milliseconds (3 seconds)
+                                    close: true,      // Display close icon
+                                    gravity: "top",   // `top` or `bottom`
+                                    position: "center", // `left`, `center` or `right`
+                                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Success theme colors
+                                    stopOnFocus: true, // Prevents dismissing on hover
+                                    className: "success-toast", // Additional CSS class for custom styling
+                                }).showToast();
+
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
+                            } else {
+                                // Display any error returned from the backend
+                                document.getElementById('duplicateError').innerText = data.message;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            </script>
+
+
+
+
+
+
+            <script>
+
+                function editCategory(couponCode, minPurchase, discountAmount, buttonElement) {
+                    $('#editCategoryModal').modal('show');
+
+                    const row = buttonElement.closest('tr');
+                    const startDate = row.querySelector('.date').dataset.date;
+                    const expiryDate = row.querySelector('.expiry-date').dataset.date;
+
+
+                    document.getElementById('editCouponCode').value = couponCode
+                    document.getElementById('editMinPurchasee').value = minPurchase
+                    document.getElementById('editDiscountAmount').value = discountAmount
+                    document.getElementById('editStartDatee').value = startDate
+                    document.getElementById('editExpiryDate').value = expiryDate
+
+
+
+                    document.getElementById('editCouponForm').addEventListener('submit', function (event) {
+                        event.preventDefault()
+
+                        // $('#editCategoryModal').modal('hide');
+
+                        const editname = document.getElementById('editCategoryName').value
+                        fetch(`/edit-coupon/`, {
+                            method: "post",
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ name: editname })
+                        })
+                            .then(response => response.json())
+                            .then(response => {
+                                if (response.success) {
+                                    console.log('enthaaaaaaaaaaaaaaaaaaaanu');
+                                    $('#editCategoryModal').modal('hide');
+
+                                    Swal.fire({
+                                        position: "center",
+                                        icon: "success",
+                                        title: response.message,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1000);
+
+
+                                }
+                            });
+
+                    })
+
+
+                }
+
+            </script>
+        </body>
+
+        </html>

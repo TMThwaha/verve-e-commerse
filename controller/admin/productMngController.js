@@ -42,12 +42,6 @@ module.exports = {
             res.status(500).send('An error occurred while fetching products');
         }
     },
-    
-
-        
-       
-    
-
     addProduct: async (req, res) => {
         const cat = await CategoryModel.find();
         const brnd = await brandModel.find();

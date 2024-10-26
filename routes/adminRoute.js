@@ -2,8 +2,10 @@ const express = require('express');
 const adminController = require('../controller/admin/adminController');
 const productMngController = require('../controller/admin/productMngController');
 const middleware = require('../middleware/userMiddleware')
-const upload = require('../config/multerconfig')
+const upload = require('../config/multerconfig');
+const orderController = require('../controller/admin/orderController');
 const adminRoute = express.Router();
+const couponController = require('../controller/admin/couponConroller');
 
 
 
@@ -37,6 +39,7 @@ adminRoute.post('/edit-brand/:id',middleware.adminthere, adminController.editBra
 //product-controller-get
 
 adminRoute.get('/productManagement',middleware.adminthere, productMngController.productManagement);
+adminRoute.get('/orderManagement',middleware.adminthere, orderController.orderManagement);
 adminRoute.get('/editProduct/:id',middleware.adminthere, productMngController.editProduct);
 
 
@@ -50,6 +53,12 @@ adminRoute.post('/product-save', upload.array('productImages', 3), productMngCon
 adminRoute.post('/productTrue/:id',middleware.adminthere, productMngController.productBlock);
 adminRoute.post('/productFalse/:id',middleware.adminthere, productMngController.productUnBlock);
 adminRoute.post('/update-product/:id', upload.array('newProductImages', 3), productMngController.productUpdate);
+
+
+
+adminRoute.get('/coupon',couponController.coupon);
+adminRoute.post('/add-coupon',couponController.addCoupon);
+adminRoute.post('/edit-coupon',couponController.editCoupon);
 
 
 

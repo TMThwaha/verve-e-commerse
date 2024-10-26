@@ -1,0 +1,439 @@
+<%- include('./partials/userHeader') -%>
+    <%- include('./partials/userHeaderNav') -%>
+        <style>
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f1f3f6;
+                color: #212121;
+            }
+
+            .container-1 {
+                display: flex;
+                min-height: 100vh;
+                width: 80%;
+            }
+
+            .sidebar-1 {
+                width: 280px;
+                background-color: white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+                padding: 20px 0;
+            }
+
+            .user-info {
+                padding: 0 20px 20px;
+                border-bottom: 1px solid #f0f0f0;
+                margin-bottom: 20px;
+            }
+
+            .user-avatar {
+                width: 50px;
+                height: 50px;
+                background-color: #ffd54f;
+                border-radius: 50%;
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .user-name {
+                display: inline-block;
+                margin-left: 10px;
+                vertical-align: middle;
+            }
+
+            .user-name div:first-child {
+                font-size: 12px;
+                color: #878787;
+            }
+
+            .user-name div:last-child {
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+            .nav-item {
+                padding: 12px 20px;
+                color: #2874f0;
+                text-decoration: none;
+                display: block;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .nav-item.active {
+                background-color: #f5faff;
+                font-weight: 500;
+            }
+
+            .sub-item {
+                padding: 8px 20px 8px 40px;
+                color: #212121;
+                font-size: 14px;
+            }
+
+            .main-content {
+                flex-grow: 1;
+                padding: 32px 32px 0;
+            }
+
+            .section-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .section-title h2 {
+                font-weight: 500;
+                font-size: 18px;
+                margin: 0;
+            }
+
+            .edit-link {
+                color: #2874f0;
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+            .info-box {
+                background-color: white;
+                padding: 24px;
+                border-radius: 2px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            }
+
+            .form-row {
+                display: flex;
+                margin-bottom: 24px;
+            }
+
+            .form-row input[type="text"],
+            .form-row input[type="email"],
+            .form-row input[type="tel"] {
+                flex: 1;
+                padding: 8px 16px;
+                margin-right: 16px;
+                border: 1px solid #e0e0e0;
+                border-radius: 2px;
+                font-size: 14px;
+                color: #212121;
+            }
+
+            .form-row input[type="text"]:last-child,
+            .form-row input[type="email"]:last-child,
+            .form-row input[type="tel"]:last-child {
+                margin-right: 0;
+            }
+
+            .radio-group {
+                margin-bottom: 24px;
+            }
+
+            .radio-group>div {
+                font-size: 12px;
+                color: #878787;
+                margin-bottom: 8px;
+            }
+
+            .radio-group label {
+                margin-right: 32px;
+                font-size: 14px;
+                color: #212121;
+            }
+
+            .radio-group input[type="radio"] {
+                margin-right: 8px;
+            }
+
+            .gift-card-balance {
+                float: right;
+                color: #388e3c;
+            }
+
+            .sub-section {
+                margin-bottom: 24px;
+            }
+
+            .sub-section:last-child {
+                margin-bottom: 0;
+            }
+
+            .address-item {
+                border-bottom: 1px solid #e0e0e0;
+                padding-bottom: 16px;
+                margin-bottom: 16px;
+            }
+
+            .address-item:last-child {
+                border-bottom: none;
+            }
+
+            .address-tag {
+                background-color: #f5faff;
+                color: #2874f0;
+                padding: 5px 10px;
+                display: inline-block;
+                margin-bottom: 8px;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .address-item p {
+                font-size: 14px;
+                color: #666;
+                margin: 4px 0;
+            }
+
+            .add-address-button {
+                background-color: #2874f0;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+        </style>
+        </head>
+
+        <body>
+            <div class="container-1">
+                <div class="sidebar-1">
+                    <div class="user-info">
+                        <a href="/user-profile">
+                            <div class="user-avatar"></div>
+                        </a>
+                        <div class="user-name">
+                            <div>Hello,</div>
+                            <div>Muhammed Thwaha</div>
+                        </div>
+                    </div>
+                    <nav style="margin-left: 20px;">
+                        <a href="/user-address" class="nav-item">ADDRESS</a>
+                        <a href="/user-orders" class="nav-item">ORDERS</a>
+                        <a href="#" class="nav-item ">WALLET</a>
+                        <a href="/wishlist" class="nav-item">WISHLIST</a>
+
+
+                    </nav>
+                </div>
+                <div class="main-content">
+                    <div class="section-title">
+                        <h5>My Wishlist (<span id="wishlist-count"><%= wishList.length %></span>)</h5>
+                    </div>
+
+                    <div class="info-box" style="height: 480px; overflow-y: auto; border: 1px solid #e0e0e0; padding: 20px;">
+                        
+                        <% wishList.forEach(element => { %>
+                            <div style="display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #e0e0e0;">
+                                <div style="flex: 0 0 100px; margin-right: 20px;">
+                                    <a href="/product-detail/<%= element?.product?._id %>">
+                                    <img src="/uploads/<%= element.product.image[0] %>" alt="<%= element.product.image %>" width="100" style="border-radius: 5px;"/>
+                                    </a>
+                                    <h2 style="margin: 0; font-size: 14px; font-weight: bold;">
+                                        <%= element.product.name %>
+                                    </h2>
+                                </div>
+                                <div style="flex: 1; text-align: left;">
+                                    <p style="margin: 5px 0; color: #777;">
+                                        <%= element.product.brand.name %>
+                                    </p>
+                                    <p style="margin: 5px 0; color: #777;">
+                                        <%= element.product.category.name %>
+                                    </p>
+                                    <p style="margin: 5px 0; color: #777;">
+                                        <%= element.product.category.description  %>
+                                    </p>
+                                    
+                                </div>
+                                <div style="flex: 0 0 120px; text-align: center;">
+                                    <p style="margin: 0; font-weight: bold; color:  #999;">Price</p>
+                                    <p style="margin: 0; font-weight: bold; color: #2e7d32;">₹<%= element.product.price %></p>
+                                    <p style="margin: 0; color: #999;">( off)</p>
+                                </div>
+                                <div style="flex: 0 0 50px; text-align: center;">
+                                    <a href="#" class="delete-wishlist-item" data-id="<%= element.product._id %>" data-name="<%= element.product.name %>" style="color: #ff0000; text-decoration: none;" title="Delete">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+            </div>
+
+          
+
+
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    
+                    const deleteButtons = document.querySelectorAll('.delete-wishlist-item');
+            
+                    deleteButtons.forEach(button => {
+                        button.addEventListener('click', function (event) {
+                            event.preventDefault(); 
+                            //**Getting productId and productName
+                            const productId = this.getAttribute('data-id'); 
+                            const productName = this.getAttribute('data-name'); 
+            
+                            
+                            swal({
+                                title: `Remove ${productName}?`,
+                                text: "Are you sure you want to remove this item from your wishlist?",
+                                icon: "warning",
+                                buttons: true,
+                                // dangerMode: true, 
+                                buttons: ["Cancel", "Yes, remove"],
+                            })
+                            .then((removed) => {
+                                if (removed) {
+                                    // If user confirms, send POST request to remove item
+                                    fetch('/wishlist-remove', {
+                                        method: 'POST', // or 'DELETE' if you prefer
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ productId: productId })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            // Remove the product from the DOM
+                                            // const parentDiv = this.closest('div[style="display: flex; align-items:flex-start; padding: 20px; border-bottom: 1px solid #e0e0e0;"]');
+                                            // parentDiv.remove();
+                                            console.log('successssssssssssssssssssssssssssssssssssssssss');
+                                            
+                                            swal(`${productName} has been removed!`, {
+                                                icon: "success",
+                                            });
+
+                                            setTimeout(() => {
+                                                location.reload()
+                                            }, 3000);
+                                            // Show success message
+                                          
+                                        } 
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                        swal('Error!', 'Something went wrong. Please try again.', 'error');
+                                    });
+                                } else {
+                                    // If the user cancels, just show a message or do nothing
+                                    swal(`${productName} is safe in your wishlist!`);
+                                }
+                            });
+                        });
+                    });
+                });
+            </script>
+            
+
+            <!--===============================================================================================-->
+            <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/animsition/js/animsition.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/bootstrap/js/popper.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/select2/select2.min.js"></script>
+            <script>
+                $(".js-select2").each(function () {
+                    $(this).select2({
+                        minimumResultsForSearch: 20,
+                        dropdownParent: $(this).next('.dropDownSelect2')
+                    });
+                })
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/daterangepicker/moment.min.js"></script>
+            <script src="vendor/daterangepicker/daterangepicker.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/slick/slick.min.js"></script>
+            <script src="js/slick-custom.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/parallax100/parallax100.js"></script>
+            <script>
+                $('.parallax100').parallax100();
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+            <script>
+                $('.gallery-lb').each(function () { // the containers for all your galleries
+                    $(this).magnificPopup({
+                        delegate: 'a', // the selector for gallery item
+                        type: 'image',
+                        gallery: {
+                            enabled: true
+                        },
+                        mainClass: 'mfp-fade'
+                    });
+                });
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/isotope/isotope.pkgd.min.js"></script>
+            <!--===============================================================================================-->
+            <script src="vendor/sweetalert/sweetalert.min.js"></script>
+
+
+            <script>
+
+                // $('.js-addwish-b2').each(function () {
+                //     var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+                //     $(this).on('click', function () {
+                //         swal(nameProduct, "is added to wishlist !", "success");
+
+                //         $(this).addClass('js-addedwish-b2');
+                //         $(this).off('click');
+                //     });
+                // });
+
+                // $('.js-addwish-detail').each(function () {
+                //     var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+
+                //     $(this).on('click', function () {
+                //         swal(nameProduct, "is added to wishlist !", "success");
+
+                //         $(this).addClass('js-addedwish-detail');
+                //         $(this).off('click');
+                //     });
+                // });
+
+                /*---------------------------------------------*/
+
+                $('.js-addcart-detail').each(function () {
+                    var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+                    $(this).on('click', function () {
+                        swal(nameProduct, "is added to cart !", "success");
+                    });
+                });
+
+            </script>
+            <!--===============================================================================================-->
+            <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+            <script>
+                $('.js-pscroll').each(function () {
+                    $(this).css('position', 'relative');
+                    $(this).css('overflow', 'hidden');
+                    var ps = new PerfectScrollbar(this, {
+                        wheelSpeed: 1,
+                        scrollingThreshold: 1000,
+                        wheelPropagation: false,
+                    });
+
+                    $(window).on('resize', function () {
+                        ps.update();
+                    })
+                });
+            </script>
+            <!--===============================================================================================-->
+            <script src="js/main.js"></script>
+
+        </body>
+
+        </html>

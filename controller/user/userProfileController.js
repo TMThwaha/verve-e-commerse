@@ -4,6 +4,7 @@ const categoryModel = require("../../model/CategoryModel");
 const bcrypt = require('bcrypt')
 const { decrypt } = require('dotenv');
 const Address = require('../../model/userAddressModel');
+const Order = require('../../model/orderModel');
 
 
 
@@ -23,7 +24,7 @@ module.exports = {
     },
 
     editName: async (req, res) => {
-   
+
         const id = req.session.user._id;
 
 
@@ -128,21 +129,21 @@ module.exports = {
             const userId = req.session.user; // Get the user ID from session
             const { id } = req.params; // Address ID from route parameters
             const { name, number, pincode, locality, address, city, state } = req.body; // Data to update
-    
+
             // Find the user's address document
             const userAddress = await Address.findOne({ userId });
-    
+
             if (!userAddress) {
                 return res.status(404).json({ message: 'User not found' });
             }
-    
+
             // Find the specific address by ID
             const addressToUpdate = userAddress.addresses.id(id);
-    
-            if (!addressToUpdate) {                                           
+
+            if (!addressToUpdate) {
                 return res.status(404).json({ message: 'Address not found' });
-            }                                                                  
-    
+            }
+
             // Update the address fields
             addressToUpdate.name = name || addressToUpdate.name;
             addressToUpdate.number = number || addressToUpdate.number;
@@ -151,14 +152,34 @@ module.exports = {
             addressToUpdate.address = address || addressToUpdate.address;
             addressToUpdate.city = city || addressToUpdate.city;
             addressToUpdate.state = state || addressToUpdate.state;
-    
+
             // Save the updated address document
             await userAddress.save();
-    
+
             res.status(200).json({ message: 'Address updated successfully', address: addressToUpdate });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Server error', error });
         }
+    },
+    userOrder: async (req, res) => {
+        const userInfo = req.session.user;
+        const orders = await Order.find({ userId: userInfo._id }).lean(); // Use `lean()` for better performance if you don't need mongoose models
+        console.log('orderssssss',orders);
+        
+        // Assuming each product in the order has a productId and you need to populate the details
+        for (let order of orders) {
+            for (let i = 0; i < order.products.length; i++) {
+                const productId = order.products[i].productId;
+                console.log('productIddddddddddddddddd',productId);
+                
+                const productDetails = await productModel.findById(productId).lean();
+                order.products[i] = { ...productDetails, quantity: order.products[i].quantity };
+            }
+        }
+       
+
+        res.render('user/orders', { userInfo, orders })
     }
+
 }

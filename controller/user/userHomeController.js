@@ -20,21 +20,12 @@ module.exports = {
 
     try {
 
-
-      // var cart = await cartModel.findOne({ userId: userInfo._id }).populate('cartProducts.productId')
       if (!userInfo) {
 
         res.render('user/webHome', { userInfo, products, category });
       } else {
-      //   const cart = new cartModel({
-      //     userId: req.session.user._id,
-      // });
+     
       var cart = await cartModel.findOne({ userId: req.session.user._id}).populate('cartProducts.productId')
-
-      // await cart.save();
-      console.log('userInfo',userInfo);
-      console.log('products',products);
-      console.log('cart',cart);
    
       
         res.render('user/webHome', { userInfo, products,category,});
@@ -55,9 +46,6 @@ module.exports = {
   renderOtpPage: (req, res) => {
     const err = req.session.err;
     req.session.err = null;
-    console.log("_________________________errr");
-    console.log(err);
-    console.log("_________________________");
     res.render("user/otp", { err });
   },
 
@@ -127,11 +115,11 @@ module.exports = {
       }
 
       if (req.session.storeOtp === otp) {
+
         delete req.session.storeOtp;
         delete req.session.otpExpiration;
-        console.log('//////////////////', req.session.userDetails);
         const { name, email, pass } = req.session.userDetails;
-        console.log("something");
+      
 
 
         const salt = await bcrypt.genSalt(10);
@@ -143,7 +131,7 @@ module.exports = {
           email: email,
           password: hashedPassword
         });
-        console.log('stored', storingUser);
+        
         await storingUser.save();
 
         // Store data in session
@@ -152,7 +140,7 @@ module.exports = {
         delete req.session.otpExpiration
         res.redirect('/');
       } else {
-        console.log("error");
+        
         req.session.err = "Invalid OTP";
         res.redirect('/otp');
       }
@@ -179,7 +167,6 @@ module.exports = {
     req.session.storeOtp = otpcode;
     req.session.otpExpiration = Date.now() + OTP_EXPIRATION_TIME;
 
-    console.log("hhhhhhhhhhhh");
     res.render("user/otp");
   },
 userLogin: async (req, res) => {
