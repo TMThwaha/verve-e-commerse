@@ -6,21 +6,21 @@ const fs = require("fs");
 const path = require("path");
 
 // Validation middleware for product fields
-const validateProduct = [
-    body('productName')
-        .trim()
-        .notEmpty().withMessage('Product name is required.')
-        .matches(/^[A-Za-z\s]+$/).withMessage('Product name should only contain letters and spaces.'),
-    body('description')
-        .trim()
-        .notEmpty().withMessage('Description is required.'),
-    body('price')
-        .isFloat({ gt: 0 }).withMessage('Price must be a positive number.'),
-    body('stockQuantity')
-        .isInt({ gt: 0 }).withMessage('Stock quantity must be a positive integer.'),
-    body('category').notEmpty().withMessage('Category is required.'),
-    body('brand').notEmpty().withMessage('Brand is required.')
-];
+// const validateProduct = [
+//     body('productName')
+//         .trim()
+//         .notEmpty().withMessage('Product name is required.')
+//         .matches(/^[A-Za-z\s]+$/).withMessage('Product name should only contain letters and spaces.'),
+//     body('description')
+//         .trim()
+//         .notEmpty().withMessage('Description is required.'),
+//     body('price')
+//         .isFloat({ gt: 0 }).withMessage('Price must be a positive number.'),
+//     body('stockQuantity')
+//         .isInt({ gt: 0 }).withMessage('Stock quantity must be a positive integer.'),
+//     body('category').notEmpty().withMessage('Category is required.'),
+//     body('brand').notEmpty().withMessage('Brand is required.')
+// ];
 
 module.exports = {
      productManagement : async (req, res) => {
@@ -49,7 +49,7 @@ module.exports = {
     },
 
     productSave: [
-        validateProduct,
+        // validateProduct,
         async (req, res) => {
             const errors = validationResult(req);
 

@@ -179,6 +179,7 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Description</th>
                                     <th>Status</th>
                                     <th>Added Date</th>
                                     <th>Actions</th>
@@ -189,6 +190,9 @@
                                     <tr>
                                         <td>
                                             <%= element.name %>
+                                        </td>
+                                        <td>
+                                            <%= element.description %>
                                         </td>
                                        
                                             <input type="hidden" id="catDes" value='<%=element.description %>'>

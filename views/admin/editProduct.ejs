@@ -122,127 +122,143 @@
                     </div>
                 </div>
 
-                <form id="editProductForm" class="product-form" onsubmit="updateImageIndex()" action="/update-product/<%= product._id %>" method="post" enctype="multipart/form-data" novalidate>
+                <form id="editProductForm" class="product-form" onsubmit="updateImageIndex()"
+                    action="/update-product/<%= product._id %>" method="post" enctype="multipart/form-data" novalidate>
                     <label for="productName">Product Name:</label>
-                    <input type="text" id="productName" name="productName" value="<%= product.name %>" required pattern="[A-Za-z\s]+" title="Product name should only contain letters and spaces." aria-required="true">
+                    <input type="text" id="productName" name="productName" value="<%= product.name %>" required
+                        pattern="[A-Za-z\s]+" title="Product name should only contain letters and spaces."
+                        aria-required="true">
                     <p id="err-mess1" style="color: red;"></p>
-                
+
                     <label for="description">Description:</label>
-                    <textarea id="description" name="description" placeholder="Enter product description" required aria-required="true" minlength="10" maxlength="1000" title="Description should be between 10 and 1000 characters long."><%= product.description %></textarea>
-                
+                    <textarea id="description" name="description" placeholder="Enter product description" required
+                        aria-required="true" minlength="10" maxlength="1000"
+                        title="Description should be between 10 and 1000 characters long."><%= product.description %></textarea>
+
                     <label for="category">Category:</label>
                     <select id="category" name="category" required aria-required="true">
-                        <% categories.forEach(category => { %>
-                            <option value="<%= category?._id %>" <%= category?._id?.equals(product?.category?._id) ? 'selected' : '' %>><%= category?.name %></option>
-                        <% }) %>
+                        <% categories.forEach(category=> { %>
+                            <option value="<%= category?._id %>" <%=category?._id?.equals(product?.category?._id)
+                                ? 'selected' : '' %>><%= category?.name %>
+                            </option>
+                            <% }) %>
                     </select>
-                
+
                     <label for="brand">Brand:</label>
                     <select id="brand" name="brand" required aria-required="true">
-                        <% brands.forEach(brand => { %>
-                            <option value="<%= brand._id %>" <%=brand._id.equals(product.brand._id) ? 'selected' : '' %>><%= brand.name %></option>
-                        <% }) %>
+                        <% brands.forEach(brand=> { %>
+                            <option value="<%= brand._id %>" <%=brand._id.equals(product.brand._id) ? 'selected' : '' %>
+                                ><%= brand.name %>
+                            </option>
+                            <% }) %>
                     </select>
-                
+
                     <label for="price">Price:</label>
-                    <input type="number" id="price" name="price" placeholder="Enter price" step="0.01" required min="0.01" value="<%= product.price %>" title="Price must be a positive number." aria-required="true">
+                    <input type="number" id="price" name="price" placeholder="Enter price" step="0.01" required
+                        min="0.01" value="<%= product.price %>" title="Price must be a positive number."
+                        aria-required="true">
                     <p id="err-mess-price" style="color: red;"></p>
-                
+
                     <label for="stockQuantity">Stock Quantity:</label>
-                    <input type="number" id="stockQuantity" name="stockQuantity" placeholder="Enter stock quantity" required min="1" value="<%= product.stock %>" title="Stock quantity must be a positive integer." aria-required="true">
+                    <input type="number" id="stockQuantity" name="stockQuantity" placeholder="Enter stock quantity"
+                        required min="1" value="<%= product.stock %>" title="Stock quantity must be a positive integer."
+                        aria-required="true">
                     <p id="err-mess-stock" style="color: red;"></p>
-                
+
                     <label for="productImages">Product Images:</label>
                     <div id="imageUploadContainer">
-                        <% if (product.image && product.image.length > 0) { %>
-                            <% product.image.forEach((imageName, index) => { %>
+                        <% if (product.image && product.image.length> 0) { %>
+                            <% product.image.forEach((imageName, index)=> { %>
                                 <div class="image-field" id="image-<%= index %>" style="width: 132px;">
                                     <img style="width: 132px;" src="/uploads/<%= imageName %>" alt="Product Image">
                                     <input type="hidden" name="existingImages[]" value="<%= imageName %>">
-                                    <button type="button" class="remove-image" onclick="removeProduct('<%= index %>')" data-index="<%= index %>">Remove</button>
+                                    <button type="button" class="remove-image"
+                                        onclick="removeProduct('<%= index %>', '<%= imageName %>')"
+                                        data-index="<%= index %>">Remove</button>
+
                                 </div>
-                            <% }) %>
-                        <% } %>
-                        <input type="file" id="productImages" name="newProductImages" multiple>
-                        <div id="selectedImagesContainer"></div>
+                                <% }) %>
+                                    <% } %>
+                                        <input type="file" id="productImages" name="newProductImages" multiple>
+                                        <div id="selectedImagesContainer"></div>
                     </div>
-                
+
                     <input type="hidden" name="deleteImage" id="deleteImageIndex" value="">
-                    
+
                     <div class="form-buttons">
                         <button id="save-Btn1" type="submit" class="submit-btn">Save Product</button>
                         <button type="button" class="cancel-btn" onclick="cancelEdit()">Cancel</button>
                     </div>
                 </form>
-                
-                
+
+
             </main>
         </section>
 
 
-<script>
-   document.getElementById('editProductForm').addEventListener('submit', function (event) {
-    event.preventDefault();  // Prevent the default form submission
+        <script>
+            document.getElementById('editProductForm').addEventListener('submit', function (event) {
+                event.preventDefault();  // Prevent the default form submission
 
-    const form = document.getElementById('editProductForm');
-    const name = document.getElementById('productName').value;
-    const description = document.getElementById('description').value;
-    const category = document.getElementById('category').value;
-    const brand = document.getElementById('brand').value;
-    const price = document.getElementById('price').value;
-    const stock = document.getElementById('stockQuantity').value;
+                const form = document.getElementById('editProductForm');
+                const name = document.getElementById('productName').value;
+                const description = document.getElementById('description').value;
+                const category = document.getElementById('category').value;
+                const brand = document.getElementById('brand').value;
+                const price = document.getElementById('price').value;
+                const stock = document.getElementById('stockQuantity').value;
 
-    // Clear previous error messages
-    document.getElementById('err-mess1').textContent = '';
-    document.getElementById('err-mess-price').textContent = '';
-    document.getElementById('err-mess-stock').textContent = '';
+                // Clear previous error messages
+                document.getElementById('err-mess1').textContent = '';
+                document.getElementById('err-mess-price').textContent = '';
+                document.getElementById('err-mess-stock').textContent = '';
 
-    // Basic validation
-    let hasError = false;
+                // Basic validation
+                let hasError = false;
 
-    if (name === '') {
-        document.getElementById('err-mess1').textContent = 'Name is required';
-        hasError = true;
-    }
+                if (name === '') {
+                    document.getElementById('err-mess1').textContent = 'Name is required';
+                    hasError = true;
+                }
 
-    if (price <= 0) {
-        document.getElementById('err-mess-price').textContent = 'Price must be a positive number';
-        hasError = true;
-    }
+                if (price <= 0) {
+                    document.getElementById('err-mess-price').textContent = 'Price must be a positive number';
+                    hasError = true;
+                }
 
-    if (stock < 1) {
-        document.getElementById('err-mess-stock').textContent = 'Stock quantity must be at least 1';
-        hasError = true;
-    }
+                if (stock < 1) {
+                    document.getElementById('err-mess-stock').textContent = 'Stock quantity must be at least 1';
+                    hasError = true;
+                }
 
-    // If there's an error, don't proceed
-    if (hasError) {
-        return;
-    }else{
+                // If there's an error, don't proceed
+                if (hasError) {
+                    return;
+                } else {
 
-                form.submit();
-            
-    }
+                    form.submit();
 
-
+                }
 
 
 
-    // If no error, you can proceed with the form submission (AJAX call, etc.)
-    console.log('Name:', name);
-    console.log('Description:', description);
-    console.log('Category:', category);
-    console.log('Brand:', brand);
-    console.log('Price:', price);
-    console.log('Stock:', stock);
 
 
-});
+                // If no error, you can proceed with the form submission (AJAX call, etc.)
+                console.log('Name:', name);
+                console.log('Description:', description);
+                console.log('Category:', category);
+                console.log('Brand:', brand);
+                console.log('Price:', price);
+                console.log('Stock:', stock);
 
 
-        
-    
-</script>
+            });
+
+
+
+
+        </script>
 
 
 
@@ -294,17 +310,18 @@
 
             //remove button
 
-            function removeProduct(index) {
-                const imageIndex = document.getElementById(`image-${index}`);
-                if (imageIndex) {
-                    imageIndex.remove()
-                    deleteImage.push(index);
+            function removeProduct(index, imageName) {
+                const imageContainer = document.getElementById(`image-${index}`);
+                if (imageContainer) {
+                    imageContainer.remove();
+                    deleteImage.push(imageName); // Add the removed image name to the deletion list
                 }
-
+                updateImageIndex(); // Update hidden input with delete list
             }
 
+            // Update hidden input with list of images to delete
             function updateImageIndex() {
-                document.getElementById("deleteImageIndex").value = JSON.stringify(deleteImage)
+                document.getElementById("deleteImageIndex").value = JSON.stringify(deleteImage);
             }
 
 

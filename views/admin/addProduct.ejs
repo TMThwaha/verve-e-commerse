@@ -410,7 +410,7 @@
                         error.style.fontSize = '0.875em';
                         error.style.marginTop = '5px';
                         error.textContent = message;
-                        inputElement.parentElement.appendChild(error);
+                        inputElement.insertAdjacentElement('afterend', error);
                     }
                 });
 
