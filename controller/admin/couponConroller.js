@@ -1,3 +1,4 @@
+const Coupon = require('../../model/couponModel');
 const coupon = require('../../model/couponModel');
 
 module.exports = {
@@ -36,10 +37,26 @@ module.exports = {
     
 
     },
-    editCoupon: (req,res)=>{
+    editCoupon: async(req,res)=>{
         const {couponCode,minPurchase,discountAmount,startDate,expiryDate}= req.body;
 
         console.log('likekkekekekekek',couponCode,minPurchase,discountAmount,startDate,expiryDate);
+        const Coupon =req.body
+
+ if(Coupon){
+        res.json({ success: false, message: 'Already exists' });
         
+    }else{
+        console.log('sdgsdgs');
+        const Coupon = await coupon.updateMany({
+            couponCode:couponCode,
+            minPurchaseAmount: minPurchase,
+            discountAmount:discountAmount,
+            date:startDate,
+            expiryDate:expiryDate
+        })
+     await Coupon.save()
+     return res.json({ success: true, message: 'Coupon added successfully' });
+    }
     }
 }

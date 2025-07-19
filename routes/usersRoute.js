@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const homecontroller=require('../controller/user/userHomeController');
-// const middleware = require("../middleware/userMiddleware");
+const middleware = require("../middleware/userMiddleware");
 const userProductController = require('../controller/user/userProductController');
 const cartController = require('../controller/user/cartController');
 const userProfileController = require('../controller/user/userProfileController');
@@ -14,7 +14,7 @@ const razorPayController = require('../controller/user/razorPayController');
 
 
 
-//home-controller-get 
+// home-controller-get 
 router.get('/',blockedUser,homecontroller.ShowHomePage)
 router.get('/user-login',Authenticated,homecontroller.ShowLoginPage)
 router.get("/user-signup" ,Authenticated,homecontroller.ShowSignUpPage)

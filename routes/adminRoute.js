@@ -58,7 +58,8 @@ adminRoute.post('/update-product/:id', upload.array('newProductImages', 3), prod
 
 adminRoute.get('/coupon',couponController.coupon);
 adminRoute.post('/add-coupon',couponController.addCoupon);
-adminRoute.post('/edit-coupon',couponController.editCoupon);
+adminRoute.put('/edit-coupon',couponController.editCoupon);
+// adminRoute.delete('/delete-coupon/:id', couponController.deleteCoupon);
 
 
 

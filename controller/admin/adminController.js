@@ -5,6 +5,12 @@ const productModel = require("../../model/productModel");
 
 
 
+function isValidName(value) {
+  // allows letters (upper or lower), spaces, and specific special characters like & and '
+  return /^[A-Za-z &'’]+$/.test(value.trim());
+}
+
+
 //credentials
 const Credential = {
     email: "thwaha323@gmail.com",
